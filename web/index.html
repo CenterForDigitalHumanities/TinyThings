@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tiny Things by Rerum</title>
+    <style>
+        /* Simplified CSS for web display */
+
+        form[data-hidden] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tiny Things</h1>
+    <p>
+        Simple web forms to ping RERUM operations.
+    </p>
+
+    <div>
+        <button role="button" onclick="showForm('remoteUpdate')">import</button>
+        <button role="button" onclick="showForm('rerumUpdate')">update</button>
+        <button role="button" onclick="showForm('create')">create</button>
+        <button role="button" onclick="showForm('delete')">delete</button>
+    </div>
+
+    <form id="remoteUpdate">
+        <h2>Import Resource</h2>
+        <label for="importId">
+            URI to Import
+        </label>
+        <input type="url" id="importId" />
+        <button type="submit" role="button"> Import </button>
+    </form>
+    <form id="rerumUpdate" data-hidden="true">
+        <h2>Update Resource</h2>
+        <label for="updateId">
+            URI to Update
+        </label>
+        <input type="url" id="updateId" />
+        <button type="submit" role="button"> Update </button>
+    </form>
+    <form id="create" data-hidden="true">
+        <h2>Create Resource</h2>
+        <label for="createJSON">
+            JSON to Create
+        </label>
+        <textarea type="url" id="createJSON"></textarea>
+        <button type="submit" role="button"> Create </button>
+    </form>
+    <form id="delete" data-hidden="true">
+        <h2>Delete Resource</h2>
+        <label for="deleteId">
+            URI to Delete
+        </label>
+        <input type="url" id="deleteId" />
+        <button type="submit" role="button"> Delete </button>
+    </form>
+
+    <script>
+        function showForm(form) {
+            let forms = document.getElementsByTagName('form');
+            for (let f of forms) {
+                f.setAttribute("data-hidden", "true");
+            }
+            let showForm = document.getElementById(form);
+            showForm.removeAttribute("data-hidden");
+        }
+    </script>
+
+</body>
+
+</html>
