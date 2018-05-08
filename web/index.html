@@ -119,16 +119,38 @@
         }
 
         function importAction(form) {
-            let callback = function (error, data) {};
             let url = form.getElementsByTagName("input")[0].value;
             let importObj = function (errors, obj) {
                 if (!errors) {
-                    return put(callback, UPDATE_URL, obj);
+                    return updateAction(form);
                 } else {
                     return errors;
                 }
             };
             get(importObj, url);
+        }
+
+        function updateAction(form) {
+            let callback = function (error, data) {};
+            let url = form.getElementsByTagName("input")[0].value;
+            return put(callback, UPDATE_URL, obj);
+        }
+
+        function createAction(form) {
+            let callback = function (error, data) {};
+            let obj = form.getElementsByTagName("textarea")[0].value;
+            try {
+                obj = JSON.parse("obj");
+            } catch (error) {
+                return error;
+            }
+            return post(callback, CREATE_URL, obj);
+        }
+
+        function deleteAction(form) {
+            let callback = function (error, data) {};
+            let url = form.getElementsByTagName("input")[0].value;
+            return deleteObj(callback, DELETE_URL, url);
         }
 
         function get(callback, url) {
@@ -203,7 +225,7 @@
             xhr.send(obj);
         }
 
-        function deleteObj(callback, url) {
+        function deleteObj(callback, url, id) {
             let xhr = new XMLHttpRequest();
             xhr.open("DELETE", url);
             xhr.onreadystatechange = function () {
@@ -220,7 +242,7 @@
                     return err;
                 }
             };
-            xhr.send();
+            xhr.send(id);
         }
     </script>
 
