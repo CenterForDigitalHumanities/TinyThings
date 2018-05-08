@@ -9,6 +9,51 @@
         form[data-hidden] {
             display: none;
         }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        button,
+        input {
+            color: #a3d1ff;
+        }
+
+        button,
+        input,
+        textarea {
+            background: #262626;
+            border-color: #666666;
+            border-radius: .2rem;
+            padding: .2rem;
+        }
+
+        button[type="submit"] {
+            display: block;
+            margin: 0 auto;
+            padding: .5rem 1.5rem;
+        }
+
+        button[type="submit"]::before {
+            content:"";
+            display: block;
+            width:100%;
+        }
+
+        html,
+        body {
+            background: #060606;
+            color: #d6d6d6;
+            font-family: sans-serif;
+        }
+
+        form {
+            border: thin solid #a3d1ff;
+            padding: .5rem;
+            margin: .5rem 0;
+        }
     </style>
 </head>
 
@@ -22,7 +67,7 @@
         <button role="button" onclick="showForm('remoteUpdate')">import</button>
         <button role="button" onclick="showForm('rerumUpdate')">update</button>
         <button role="button" onclick="showForm('create')">create</button>
-        <button role="button" onclick="showForm('delete')">delete</button>
+        <button role="button" onclick="showForm('deleteObj')">delete</button>
     </div>
 
     <form id="remoteUpdate">
@@ -49,7 +94,7 @@
         <textarea type="url" id="createJSON"></textarea>
         <button type="submit" role="button"> Create </button>
     </form>
-    <form id="delete" data-hidden="true">
+    <form id="deleteObj" data-hidden="true">
         <h2>Delete Resource</h2>
         <label for="deleteId">
             URI to Delete
@@ -66,6 +111,22 @@
             }
             let showForm = document.getElementById(form);
             showForm.removeAttribute("data-hidden");
+        }
+
+        function get(callback, url) {
+            return callback();
+        }
+
+        function post(callback, url) {
+            return callback();
+        }
+
+        function put(callback, url) {
+            return callback();
+        }
+
+        function deleteObj(callback, url) {
+            return callback();
         }
     </script>
 
