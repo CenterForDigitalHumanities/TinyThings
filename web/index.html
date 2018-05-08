@@ -26,8 +26,9 @@
         textarea {
             background: #262626;
             border-color: #666666;
-            border-radius: .2rem;
-            padding: .2rem;
+            border-radius: .25em;
+            padding: .2em;
+            font-size: 1.2rem;
         }
 
         button[type="submit"] {
@@ -37,9 +38,9 @@
         }
 
         button[type="submit"]::before {
-            content:"";
+            content: "";
             display: block;
-            width:100%;
+            width: 100%;
         }
 
         html,
@@ -70,7 +71,7 @@
         <button role="button" onclick="showForm('deleteObj')">delete</button>
     </div>
 
-    <form id="remoteUpdate">
+    <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)">
         <h2>Import Resource</h2>
         <label for="importId">
             URI to Import
@@ -78,7 +79,7 @@
         <input type="url" id="importId" />
         <button type="submit" role="button"> Import </button>
     </form>
-    <form id="rerumUpdate" data-hidden="true">
+    <form id="rerumUpdate" action="javascript:void(0);" onsubmit="updateAction(this)" data-hidden="true">
         <h2>Update Resource</h2>
         <label for="updateId">
             URI to Update
@@ -86,7 +87,7 @@
         <input type="url" id="updateId" />
         <button type="submit" role="button"> Update </button>
     </form>
-    <form id="create" data-hidden="true">
+    <form id="create" action="javascript:void(0);" onsubmit="createAction(this)" data-hidden="true">
         <h2>Create Resource</h2>
         <label for="createJSON">
             JSON to Create
@@ -94,7 +95,7 @@
         <textarea type="url" id="createJSON"></textarea>
         <button type="submit" role="button"> Create </button>
     </form>
-    <form id="deleteObj" data-hidden="true">
+    <form id="deleteObj" action="javascript:void(0);" onsubmit="deleteAction(this)" data-hidden="true">
         <h2>Delete Resource</h2>
         <label for="deleteId">
             URI to Delete
@@ -113,20 +114,65 @@
             showForm.removeAttribute("data-hidden");
         }
 
+        function importAction(form) {
+            let callback = function (error, data) {};
+            let url = form.getElementsByTagName("input")[0].value;
+            let importObj = function (obj) {
+                post(callback, obj);
+            };
+            get(importObj, url);
+        }
+
         function get(callback, url) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    let obj, err;
+                    if (xhr.status === 200) {
+                        try {
+                            obj = JSON.parse(xhr.response);
+                        } catch (error) {
+                            err = error;
+                        }
+                    } else {
+                        err = new Error(xhr.statusText || "GET failed.");
+                    }
+                    if (typeof callback === "function") {
+                        return callback(err,obj);
+                    }
+                    return err;
+                }
+            };
+            xhr.send();
+        }
+
+        function post(callback, obj) {
             return callback();
         }
 
-        function post(callback, url) {
-            return callback();
-        }
-
-        function put(callback, url) {
+        function put(callback, obj) {
             return callback();
         }
 
         function deleteObj(callback, url) {
-            return callback();
+            let xhr = new XMLHttpRequest();
+            xhr.open("DELETE", url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    let res, err;
+                    if (xhr.status === 204) {
+                        res = xhr.response;
+                    } else {
+                        err = new Error(xhr.statusText || "Delete failed.");
+                    }
+                    if (typeof callback === "function") {
+                        return callback(err,res);
+                    }
+                    return err;
+                }
+            };
+            xhr.send();
         }
     </script>
 
