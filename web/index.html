@@ -105,10 +105,10 @@
     </form>
 
     <script>
-            const CREATE_URL = "create";
-            const UPDATE_URL = "update";
-            const DELETE_URL = "delete";
-        
+        const CREATE_URL = "create";
+        const UPDATE_URL = "update";
+        const DELETE_URL = "delete";
+
         function showForm(form) {
             let forms = document.getElementsByTagName('form');
             for (let f of forms) {
@@ -122,10 +122,9 @@
             let callback = function (error, data) {};
             let url = form.getElementsByTagName("input")[0].value;
             let importObj = function (errors, obj) {
-                if(!errors){
+                if (!errors) {
                     return put(callback, UPDATE_URL, obj);
-                }
-                else {
+                } else {
                     return errors;
                 }
             };
@@ -148,7 +147,7 @@
                         err = new Error(xhr.statusText || "GET failed.");
                     }
                     if (typeof callback === "function") {
-                        return callback(err,obj);
+                        return callback(err, obj);
                     }
                     return err;
                 }
@@ -161,7 +160,7 @@
             xhr.open("POST", url);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
-                    let res,err;
+                    let res, err;
                     if (xhr.status === 201) {
                         try {
                             res = JSON.parse(xhr.response);
@@ -172,7 +171,7 @@
                         err = new Error(xhr.statusText || "GET failed.");
                     }
                     if (typeof callback === "function") {
-                        return callback(err,res);
+                        return callback(err, res);
                     }
                     return err;
                 }
@@ -185,7 +184,7 @@
             xhr.open("PUT", url);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
-                    let res,err;
+                    let res, err;
                     if (xhr.status === 201) {
                         try {
                             res = JSON.parse(xhr.response);
@@ -196,12 +195,12 @@
                         err = new Error(xhr.statusText || "GET failed.");
                     }
                     if (typeof callback === "function") {
-                        return callback(err,res);
+                        return callback(err, res);
                     }
                     return err;
                 }
             };
-            xhr.send(obj);        
+            xhr.send(obj);
         }
 
         function deleteObj(callback, url) {
@@ -216,7 +215,7 @@
                         err = new Error(xhr.statusText || "Delete failed.");
                     }
                     if (typeof callback === "function") {
-                        return callback(err,res);
+                        return callback(err, res);
                     }
                     return err;
                 }
