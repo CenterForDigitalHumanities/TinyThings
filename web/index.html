@@ -105,6 +105,10 @@
     </form>
 
     <script>
+            const CREATE_URL = "create";
+            const UPDATE_URL = "update";
+            const DELETE_URL = "delete";
+        
         function showForm(form) {
             let forms = document.getElementsByTagName('form');
             for (let f of forms) {
@@ -117,8 +121,13 @@
         function importAction(form) {
             let callback = function (error, data) {};
             let url = form.getElementsByTagName("input")[0].value;
-            let importObj = function (obj) {
-                post(callback, obj);
+            let importObj = function (errors, obj) {
+                if(!errors){
+                    return put(callback, UPDATE_URL, obj);
+                }
+                else {
+                    return errors;
+                }
             };
             get(importObj, url);
         }
@@ -147,12 +156,52 @@
             xhr.send();
         }
 
-        function post(callback, obj) {
-            return callback();
+        function post(callback, url, obj) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    let res,err;
+                    if (xhr.status === 201) {
+                        try {
+                            res = JSON.parse(xhr.response);
+                        } catch (error) {
+                            err = error;
+                        }
+                    } else {
+                        err = new Error(xhr.statusText || "GET failed.");
+                    }
+                    if (typeof callback === "function") {
+                        return callback(err,res);
+                    }
+                    return err;
+                }
+            };
+            xhr.send(obj);
         }
 
-        function put(callback, obj) {
-            return callback();
+        function put(callback, url, obj) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("PUT", url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    let res,err;
+                    if (xhr.status === 201) {
+                        try {
+                            res = JSON.parse(xhr.response);
+                        } catch (error) {
+                            err = error;
+                        }
+                    } else {
+                        err = new Error(xhr.statusText || "GET failed.");
+                    }
+                    if (typeof callback === "function") {
+                        return callback(err,res);
+                    }
+                    return err;
+                }
+            };
+            xhr.send(obj);        
         }
 
         function deleteObj(callback, url) {
