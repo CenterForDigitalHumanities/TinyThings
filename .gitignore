@@ -46,7 +46,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 nbproject
-Source Packages/tiny.properties
+*.properties
 web/WEB-INF
 web/META-INF
 build.xml
