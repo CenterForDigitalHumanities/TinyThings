@@ -49,3 +49,5 @@ nbproject
 tiny.properties
 web/META-INF
 build.xml
+/build/
+/dist/

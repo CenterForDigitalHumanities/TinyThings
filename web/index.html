@@ -105,9 +105,9 @@
     </form>
 
     <script>
-        const CREATE_URL = "/create";
-        const UPDATE_URL = "/update";
-        const DELETE_URL = "/delete";
+        const CREATE_URL = "create";
+        const UPDATE_URL = "update";
+        const DELETE_URL = "delete";
 
         function showForm(form) {
             let forms = document.getElementsByTagName('form');
@@ -131,16 +131,18 @@
         }
 
         function updateAction(form) {
-            let callback = function (error, data) {};
-            let url = form.getElementsByTagName("input")[0].value;
-            return put(callback, UPDATE_URL, obj);
+            let thenPut = function (error, data) {
+                put(null,UPDATE_URL,data);
+            };
+            let uri = form.getElementsByTagName("input")[0].value;
+            return get(thenPut, uri);
         }
 
         function createAction(form) {
             let callback = function (error, data) {};
             let obj = form.getElementsByTagName("textarea")[0].value;
             try {
-                obj = JSON.parse("obj");
+                obj = JSON.parse(obj);
             } catch (error) {
                 return error;
             }

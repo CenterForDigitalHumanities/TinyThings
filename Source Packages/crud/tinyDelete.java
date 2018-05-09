@@ -116,7 +116,7 @@ public class tinyDelete extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP <code>DELETE</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -124,7 +124,7 @@ public class tinyDelete extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }

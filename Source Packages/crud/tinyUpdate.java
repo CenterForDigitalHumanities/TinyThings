@@ -25,7 +25,6 @@ import net.sf.json.JSONObject;
  *
  * @author bhaberbe
  */
-@WebServlet(name = "update", urlPatterns = {"/update"})
 public class tinyUpdate extends HttpServlet {
 
     /**
@@ -68,7 +67,7 @@ public class tinyUpdate extends HttpServlet {
             ResourceBundle rb = ResourceBundle.getBundle("tiny");
             String pubTok = rb.getString("public_token");
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/update.action");
+            URL postUrl = new URL(Constant.API_ADDR + "/update");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -117,7 +116,7 @@ public class tinyUpdate extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP <code>PUT</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -125,7 +124,7 @@ public class tinyUpdate extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
