@@ -45,4 +45,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-/nbproject/private/
+nbproject
+Source Packages/tiny.properties
+web/WEB-INF
+web/META-INF
+build.xml
