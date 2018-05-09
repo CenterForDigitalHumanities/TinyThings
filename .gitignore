@@ -47,6 +47,5 @@ Temporary Items
 .apdisk
 nbproject
 *.properties
-web/WEB-INF
 web/META-INF
 build.xml
