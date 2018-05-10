@@ -85,6 +85,10 @@
                 URI to Update
             </label>
             <input type="url" id="updateId" />
+            <label for="updateJSON">
+                New JSON for this object
+            </label>
+            <textarea id="updateJSON"></textarea>
             <button type="submit" role="button"> Update </button>
         </form>
         <form id="create" action="javascript:void(0);" onsubmit="createAction(this)" data-hidden="true">
@@ -122,7 +126,7 @@
                 let url = form.getElementsByTagName("input")[0].value;
                 let importObj = function (errors, obj) {
                     if (!errors) {
-                        return updateAction(form);
+                        return updateAction(form,obj);
                     } else {
                         return errors;
                     }
@@ -130,12 +134,22 @@
                 get(importObj, url);
             }
 
-            function updateAction (form) {
-                let thenPut = function (error, data) {
-                    put(null, UPDATE_URL, data);
+            function updateAction (form,obj) {
+                let updateObj = function (errors, obj) {
+                    if (!errors) {
+                        return updateAction(form,obj);
+                    } else {
+                        return errors;
+                    }
                 };
                 let uri = form.getElementsByTagName("input")[0].value;
-                return get(thenPut, uri);
+                let obj = form.getElementsByTagName("textarea")[0].value;
+                try {
+                    obj = JSON.parse(obj);
+                } catch (error) {
+                    return error;
+                }
+                return put(updateObj, UPDATE_URL, obj);
             }
 
             function createAction (form) {
