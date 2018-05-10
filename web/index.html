@@ -200,7 +200,7 @@
                     return err;
                 }
             };
-            xhr.send(obj);
+            xhr.send(JSON.stringify(JSON.stringify(obj)));
         }
 
         function put(callback, url, obj) {
@@ -224,7 +224,7 @@
                     return err;
                 }
             };
-            xhr.send(obj);
+            xhr.send(JSON.stringify(obj));
         }
 
         function deleteObj(callback, url, id) {
