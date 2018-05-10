@@ -201,7 +201,7 @@
                         return err;
                     }
                 };
-                xhr.send(obj);
+                xhr.send(JSON.stringify(obj));
             }
 
             function put (callback, url, obj) {
