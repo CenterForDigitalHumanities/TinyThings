@@ -51,6 +51,10 @@ public class tinySave extends HttpServlet {
           bodyString.append(line);
         }
         requestString = bodyString.toString();
+        System.out.println("This is how I understood your tiny save request as a string:");
+        System.out.println("<--------------------->");
+        System.out.println(requestString);
+        System.out.println("<--------------------->");
         try{ 
             //JSONObject test
             requestJSON = JSONObject.fromObject(requestString);
