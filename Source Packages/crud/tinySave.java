@@ -39,6 +39,7 @@ public class tinySave extends HttpServlet {
             throws ServletException, IOException {
         
         BufferedReader bodyReader = request.getReader();
+      
         StringBuilder bodyString = new StringBuilder();
         String line;
         JSONObject requestJSON = new JSONObject();
@@ -51,7 +52,7 @@ public class tinySave extends HttpServlet {
           bodyString.append(line);
         }
         requestString = bodyString.toString();
-        System.out.println("This is how I understood your tiny save request as a string:");
+        System.out.println("This is how I understood your tiny update request as a string:");
         System.out.println("<--------------------->");
         System.out.println(requestString);
         System.out.println("<--------------------->");
@@ -61,7 +62,7 @@ public class tinySave extends HttpServlet {
             moveOn = true;
         }
         catch(Exception ex){
-            response.getWriter().print("Your provided content must be JSON");
+            response.getWriter().print("Your provided content must be JSON 3");
         }
         
         //If it was JSON
@@ -82,7 +83,11 @@ public class tinySave extends HttpServlet {
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             //Pass in the user provided JSON for the body of the rerumserver v1 request
-            out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
+            System.out.println("This is what to send with create request to rerum");
+            System.out.println(requestJSON.toString());
+            System.out.println(URLEncoder.encode(requestJSON.toString(), "utf-8"));
+            out.writeBytes(requestJSON.toString());
+            //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
             out.flush();
             out.close(); 
             //Execute rerum server v1 request

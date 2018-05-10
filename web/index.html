@@ -173,81 +173,83 @@
                         if (typeof callback === "function") {
                             return callback(err, obj);
                         }
-                        return err;
                     }
-                };
-                xhr.send();
-            }
+            };
+            xhr.send();
+        }
 
-            function post (callback, url, obj) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("POST", url);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        let res, err;
-                        if (xhr.status === 201) {
-                            try {
-                                res = JSON.parse(xhr.response);
-                            } catch (error) {
-                                err = error;
-                            }
-                        } else {
-                            err = new Error(xhr.statusText || "GET failed.");
+        function post(callback, url, obj) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", url, false);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    let res, err;
+                    if (xhr.status === 201) {
+                        try {
+                            res = JSON.parse(xhr.response);
+                        } catch (error) {
+                            err = error;
                         }
-                        if (typeof callback === "function") {
-                            return callback(err, res);
-                        }
-                        return err;
+                    } else {
+                        err = new Error(xhr.statusText || "GET failed.");
                     }
-                };
-                xhr.send(JSON.stringify(obj));
+                    if (typeof callback === "function") {
+                        return callback(err, res);
+                    }
+                    return err;
+                }
+            };
+            if(typeof obj !== "string"){
+                obj = JSON.stringify(obj);
             }
+            xhr.send(obj);
+        }
 
-            function put (callback, url, obj) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("PUT", url);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        let res, err;
-                        if (xhr.status === 201) {
-                            try {
-                                res = JSON.parse(xhr.response);
-                            } catch (error) {
-                                err = error;
-                            }
-                        } else {
-                            err = new Error(xhr.statusText || "GET failed.");
+        function put(callback, url, obj) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("PUT", url);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    let res, err;
+                    if (xhr.status === 201) {
+                        try {
+                            res = JSON.parse(xhr.response);
+                        } 
+                        catch (error) {
+                            err = error;
                         }
-                        if (typeof callback === "function") {
-                            return callback(err, res);
-                        }
-                        return err;
                     }
-                };
-                xhr.send(JSON.stringify(obj));
+                    return err;
+                }
+            };
+            if(typeof obj !== "string"){
+                obj = JSON.stringify(obj);
             }
+            xhr.send(obj);
+        }
 
-            function deleteObj (callback, url, id) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("DELETE", url);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        let res, err;
-                        if (xhr.status === 204) {
-                            res = xhr.response;
-                        } else {
-                            err = new Error(xhr.statusText || "Delete failed.");
-                        }
-                        if (typeof callback === "function") {
-                            return callback(err, res);
-                        }
-                        return err;
+        function deleteObj (callback, url, id) {
+            let xhr = new XMLHttpRequest();
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.open("DELETE", url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    let res, err;
+                    if (xhr.status === 204) {
+                        res = xhr.response;
+                    } else {
+                        err = new Error(xhr.statusText || "Delete failed.");
                     }
-                };
-                xhr.send(id);
-            }
+                    if (typeof callback === "function") {
+                        return callback(err, res);
+                    }
+                    return err;
+                }
+            };
+            xhr.send(id);
+        }
         </script>
 
     </body>
