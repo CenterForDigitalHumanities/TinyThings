@@ -134,7 +134,7 @@
                 get(importObj, url);
             }
 
-            function updateAction (form,obj) {
+            function updateAction (form,objIn) {
                 let updateObj = function (errors, obj) {
                     if (!errors) {
                         return updateAction(form,obj);
@@ -143,7 +143,7 @@
                     }
                 };
                 let uri = form.getElementsByTagName("input")[0].value;
-                let obj = form.getElementsByTagName("textarea")[0].value;
+                let obj = objIn || form.getElementsByTagName("textarea")[0].value;
                 try {
                     obj = JSON.parse(obj);
                 } catch (error) {
