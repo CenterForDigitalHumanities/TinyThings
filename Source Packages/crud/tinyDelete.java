@@ -42,7 +42,6 @@ public class tinyDelete extends HttpServlet {
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
         String line;
-        JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
         
@@ -56,13 +55,13 @@ public class tinyDelete extends HttpServlet {
         System.out.println("<--------------------->");
         System.out.println(requestString);
         System.out.println("<--------------------->");
-        try{ 
-            //JSONObject test
-            requestJSON = JSONObject.fromObject(requestString);
-            moveOn = true;
+        
+        if(!requestString.contains(Constant.ID_PATTERN)){
+            //IT IS NOT a rerum object, we can't delete this
+            response.getWriter().print("Your provided id must be a RERUM URL");
         }
-        catch(Exception ex){
-            response.getWriter().print("Your provided content must be JSON");
+        else{
+            moveOn = true;
         }
         
         //If it was JSON
@@ -83,7 +82,7 @@ public class tinyDelete extends HttpServlet {
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             //Pass in the user provided JSON for the body of the rerumserver v1 request
-            out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
+            out.writeBytes(URLEncoder.encode(requestString, "utf-8"));
             out.flush();
             out.close(); 
             //Execute rerum server v1 request
