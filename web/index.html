@@ -1,275 +1,328 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>Tiny Things by Rerum</title>
-    <style>
-        /* Simplified CSS for web display */
+    <head>
+        <title>Tiny Things by Rerum</title>
+        <style>
+            /* Simplified CSS for web display */
 
-        form[data-hidden] {
-            display: none;
-        }
+            form[data-hidden] {
+                display: none;
+            }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        button,
-        input {
-            color: #a3d1ff;
-        }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            button,
+            input {
+                color: #a3d1ff;
+            }
 
-        button,
-        input,
-        textarea {
-            background: #262626;
-            border-color: #666666;
-            border-radius: .25em;
-            padding: .2em;
-            font-size: 1.2rem;
-        }
+            button,
+            input,
+            textarea {
+                background: #262626;
+                border-color: #666666;
+                border-radius: .25em;
+                padding: .2em;
+                font-size: 1.2rem;
+            }
 
-        button[type="submit"] {
-            display: block;
-            margin: 0 auto;
-            padding: .5rem 1.5rem;
-        }
+            button[type="submit"] {
+                display: block;
+                margin: 0 auto;
+                padding: .5rem 1.5rem;
+            }
 
-        button[type="submit"]::before {
-            content: "";
-            display: block;
-            width: 100%;
-        }
+            button[type="submit"]::before {
+                content: "";
+                display: block;
+                width: 100%;
+            }
 
-        html,
-        body {
-            background: #060606;
-            color: #d6d6d6;
-            font-family: sans-serif;
-        }
+            html,
+            body {
+                background: #060606;
+                color: #d6d6d6;
+                font-family: sans-serif;
+            }
 
-        form {
-            border: thin solid #a3d1ff;
-            padding: .5rem;
-            margin: .5rem 0;
-        }
-    </style>
-</head>
+            form {
+                border: thin solid #a3d1ff;
+                padding: .5rem;
+                margin: .5rem 0;
+            }
 
-<body>
-    <h1>Tiny Things</h1>
-    <p>
-        Simple web forms to ping RERUM operations.
-    </p>
+            div#flash-message {
+                display: none;
+                background-color: #d6d6d6;
+                color: #111111;
+                padding: .5em;
+                font-size: 1.2rem;
+            }
 
-    <div>
-        <button role="button" onclick="showForm('remoteUpdate')">import</button>
-        <button role="button" onclick="showForm('rerumUpdate')">update</button>
-        <button role="button" onclick="showForm('create')">create</button>
-        <button role="button" onclick="showForm('deleteObj')">delete</button>
-    </div>
+            div#flash-message.error {
+                display: block;
+                background-color: #ff6666;
+            }
 
-    <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)">
-        <h2>Import Resource</h2>
-        <label for="importId">
+            div#flash-message.success {
+                display: block;
+                background-color: #66ff66;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Tiny Things</h1>
+        <p>
+            Simple web forms to ping RERUM operations.
+        </p>
+
+        <div>
+            <button role="button" onclick="showForm('remoteUpdate')">import</button>
+            <button role="button" onclick="showForm('rerumUpdate')">update</button>
+            <button role="button" onclick="showForm('create')">create</button>
+            <button role="button" onclick="showForm('deleteObj')">delete</button>
+        </div>
+
+        <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)">
+            <h2>Import Resource</h2>
+            <label for="importId">
                 URI to Import
             </label>
-        <input type="url" id="importId" />
-        <button type="submit" role="button"> Import </button>
-    </form>
-    <form id="rerumUpdate" action="javascript:void(0);" onsubmit="updateAction(this)" data-hidden="true">
-        <h2>Update Resource</h2>
-        <label for="updateId">
+            <input type="url" id="importId" />
+            <button type="submit" role="button"> Import </button>
+        </form>
+        <form id="rerumUpdate" action="javascript:void(0);" onsubmit="updateAction(this)" data-hidden="true">
+            <h2>Update Resource</h2>
+            <label for="updateId">
                 URI to Update
             </label>
-        <input type="url" id="updateId" />
-        <label for="updateJSON">
+            <input type="url" id="updateId" />
+            <label for="updateJSON">
                 New JSON for this object
             </label>
-        <textarea id="updateJSON"></textarea>
-        <button type="submit" role="button"> Update </button>
-    </form>
-    <form id="create" action="javascript:void(0);" onsubmit="createAction(this)" data-hidden="true">
-        <h2>Create Resource</h2>
-        <label for="createJSON">
+            <textarea id="updateJSON"></textarea>
+            <button type="submit" role="button"> Update </button>
+        </form>
+        <form id="create" action="javascript:void(0);" onsubmit="createAction(this)" data-hidden="true">
+            <h2>Create Resource</h2>
+            <label for="createJSON">
                 JSON to Create
             </label>
-        <textarea id="createJSON"></textarea>
-        <button type="submit" role="button"> Create </button>
-    </form>
-    <form id="deleteObj" action="javascript:void(0);" onsubmit="deleteAction(this)" data-hidden="true">
-        <h2>Delete Resource</h2>
-        <label for="deleteId">
+            <textarea id="createJSON"></textarea>
+            <button type="submit" role="button"> Create </button>
+        </form>
+        <form id="deleteObj" action="javascript:void(0);" onsubmit="deleteAction(this)" data-hidden="true">
+            <h2>Delete Resource</h2>
+            <label for="deleteId">
                 URI to Delete
             </label>
-        <input type="url" id="deleteId" />
-        <button type="submit" role="button"> Delete </button>
-    </form>
+            <input type="url" id="deleteId" />
+            <button type="submit" role="button"> Delete </button>
+        </form>
 
-    <script>
-        const CREATE_URL = "create";
-        const UPDATE_URL = "update";
-        const DELETE_URL = "delete";
+        <div id="flash-message">
+            This &lt;div> should be invisible until a message appears.
+        </div>
 
-        function showForm(form) {
-            let forms = document.getElementsByTagName('form');
-            for (let f of forms) {
-                f.setAttribute("data-hidden", "true");
+        <script>
+            const CREATE_URL = "create";
+            const UPDATE_URL = "update";
+            const DELETE_URL = "delete";
+
+            function showForm (form) {
+                let forms = document.getElementsByTagName('form');
+                for (let f of forms) {
+                    f.setAttribute("data-hidden", "true");
+                }
+                let showForm = document.getElementById(form);
+                showForm.removeAttribute("data-hidden");
             }
-            let showForm = document.getElementById(form);
-            showForm.removeAttribute("data-hidden");
-        }
 
-        function importAction(form) {
-            let url = form.getElementsByTagName("input")[0].value;
-            let importObj = function(errors, obj) {
-                if (!errors) {
-                    return updateAction(form, obj);
-                } else {
-                    return errors;
-                }
-            };
-            get(importObj, url);
-        }
+            function setMessage (msg, type) {
+                let msgDiv = document.getElementById("flash-message")
+                msgDiv.innerHTML = msg
+                msgDiv.className = (type) ? type : ""
+            }
 
-        function updateAction (form,objIn) {
-            let updateObj = function (errors, obj) {
-                if (!errors) {
-                    return obj;
-                } else {
-                    return errors;
+            async function importAction (form) {
+                let url = form.getElementsByTagName("input")[0].value
+                try {
+                    let response = await fetch(url)
+                    let uri = await fetch(UPDATE_URL,{
+                        method: 'PUT',
+                        body: await response.text(),
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        })
+                    })
+                    await setMessage("Imported: ${uri}")
+                    return await uri.json()
+                } catch (error) {
+                    setMessage("Error:" + error.message)
+                    return error;
                 }
-            };
-            let uri = form.getElementsByTagName("input")[0].value;
-            let obj;
-            if(objIn){
-                obj = objIn;
-            } else {
-                obj = form.getElementsByTagName("textarea")[0].value;
+            }
+
+            async function updateAction (form, objIn) {
+                let uri = form.getElementsByTagName("input")[0].value
+                let obj
+                if (objIn) {
+                    obj = objIn
+                } else {
+                    obj = form.getElementsByTagName("textarea")[0].value
+                    try {
+                        obj = JSON.parse(obj)
+                        obj["@id"] = uri
+                    } catch (error) {
+                        setMessage("Object is not proper JSON: ${obj}", "error")
+                    }
+                }
+                try {
+                    let uri = await put(UPDATE_URL, obj)
+                    setMessage("Updated: ${uri}")
+                    return uri
+                } catch (error) {
+                    setMessage("Error:" + error.message)
+                    return error;
+                }
+            }
+
+            async function createAction (form) {
+                let callback = function (error, data) {
+                    if (!error) {
+                        setMessage("Created: " + JSON.stringify(data))
+                        return data
+                    } else {
+                        setMessage("Error:" + error.message)
+                        return error
+                    }
+                };
+                let obj = form.getElementsByTagName("textarea")[0].value;
                 try {
                     obj = JSON.parse(obj);
-                    obj["@id"] = uri;
                 } catch (error) {
                     return error;
                 }
-            };
-            return put(updateObj, UPDATE_URL, obj);
-        }
-
-        function createAction(form) {
-            let callback = function(error, data) {};
-            let obj = form.getElementsByTagName("textarea")[0].value;
-            try {
-                obj = JSON.parse(obj);
-            } catch (error) {
-                return error;
+                return post(callback, CREATE_URL, obj);
             }
-            return post(callback, CREATE_URL, obj);
-        }
 
-        function deleteAction(form) {
-            let callback = function(error, data) {};
-            let url = form.getElementsByTagName("input")[0].value;
-            return deleteObj(callback, DELETE_URL, url);
-        }
-
-        function get(callback, url) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    let obj, err;
-                    if (xhr.status === 200) {
-                        try {
-                            obj = JSON.parse(xhr.response);
-                        } catch (error) {
-                            err = error;
-                        }
+            function deleteAction (form) {
+                let callback = function (error, data) {
+                    if (!error) {
+                        setMessage("Deleted: " + JSON.stringify(data))
+                        return data
                     } else {
-                        err = new Error(xhr.statusText || "GET failed.");
+                        setMessage("Error:" + error.message)
+                        return error
                     }
-                    if (typeof callback === "function") {
-                        return callback(err, obj);
-                    }
-                }
-            };
-            xhr.send();
-        }
-
-        function post(callback, url, obj) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", url, false);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    let res, err;
-                    if (xhr.status === 201) {
-                        try {
-                            res = JSON.parse(xhr.response);
-                        } catch (error) {
-                            err = error;
-                        }
-                    } else {
-                        err = new Error(xhr.statusText || "GET failed.");
-                    }
-                    if (typeof callback === "function") {
-                        return callback(err, res);
-                    }
-                    return err;
-                }
-            };
-            if (typeof obj !== "string") {
-                obj = JSON.stringify(obj);
+                };
+                let url = form.getElementsByTagName("input")[0].value;
+                return deleteObj(callback, DELETE_URL, url);
             }
-            xhr.send(obj);
-        }
 
-        function put(callback, url, obj) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("PUT", url);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    let res, err;
-                    if (xhr.status === 201) {
-                        try {
-                            res = JSON.parse(xhr.response);
-                        } catch (error) {
-                            err = error;
+            async function get (url) {
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        let obj, err;
+                        if (xhr.status === 200) {
+                            try {
+                                obj = JSON.parse(xhr.response);
+                            } catch (error) {
+                                err = error;
+                            }
+                        } else {
+                            err = new Error(xhr.statusText || "GET failed.");
+                        }
+                        if (typeof callback === "function") {
+                            return callback(err, obj);
                         }
                     }
-                    return err;
-                }
-            };
-            if (typeof obj !== "string") {
-                obj = JSON.stringify(obj);
+                };
+                xhr.send();
             }
-            xhr.send(obj);
-        }
 
-        function deleteObj(callback, url, id) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("DELETE", url);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    let res, err;
-                    if (xhr.status === 204) {
-                        res = xhr.response;
-                    } else {
-                        err = new Error(xhr.statusText || "Delete failed.");
+            function post (callback, url, obj) {
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", url, false);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        let res, err;
+                        if (xhr.status === 201) {
+                            try {
+                                res = JSON.parse(xhr.response);
+                            } catch (error) {
+                                err = error;
+                            }
+                        } else {
+                            err = new Error(xhr.statusText || "Create failed.");
+                        }
+                        if (typeof callback === "function") {
+                            return callback(err, res);
+                        }
+                        return err;
                     }
-                    if (typeof callback === "function") {
-                        return callback(err, res);
-                    }
-                    return err;
+                };
+                if (typeof obj !== "string") {
+                    obj = JSON.stringify(obj);
                 }
-            };
-            xhr.send(id);
-        }
-    </script>
+                xhr.send(obj);
+            }
 
-</body>
+            function put (callback, url, obj) {
+                let xhr = new XMLHttpRequest();
+                xhr.open("PUT", url);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        let res, err;
+                        if (xhr.status === 201) {
+                            try {
+                                res = JSON.parse(xhr.response);
+                            } catch (error) {
+                                err = error;
+                            }
+                        } else {
+                            err = new Error(xhr.statusText || "Update failed.")
+                        }
+                        return err;
+                    }
+                };
+                if (typeof obj !== "string") {
+                    obj = JSON.stringify(obj);
+                }
+                xhr.send(obj);
+            }
+
+            function deleteObj (callback, url, id) {
+                let xhr = new XMLHttpRequest();
+                xhr.open("DELETE", url);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        let res, err;
+                        if (xhr.status === 204) {
+                            res = xhr.response;
+                        } else {
+                            err = new Error(xhr.statusText || "Delete failed.");
+                        }
+                        if (typeof callback === "function") {
+                            return callback(err, res);
+                        }
+                        return err;
+                    }
+                };
+                xhr.send(id);
+            }
+        </script>
+
+    </body>
 
 </html>
