@@ -5,11 +5,11 @@
     <title>Tiny Things by Rerum</title>
     <style>
         /* Simplified CSS for web display */
-        
+
         form[data-hidden] {
             display: none;
         }
-        
+
         h1,
         h2,
         h3,
@@ -20,7 +20,7 @@
         input {
             color: #a3d1ff;
         }
-        
+
         button,
         input,
         textarea {
@@ -30,26 +30,26 @@
             padding: .2em;
             font-size: 1.2rem;
         }
-        
+
         button[type="submit"] {
             display: block;
             margin: 0 auto;
             padding: .5rem 1.5rem;
         }
-        
+
         button[type="submit"]::before {
             content: "";
             display: block;
             width: 100%;
         }
-        
+
         html,
         body {
             background: #060606;
             color: #d6d6d6;
             font-family: sans-serif;
         }
-        
+
         form {
             border: thin solid #a3d1ff;
             padding: .5rem;
@@ -134,34 +134,27 @@
             get(importObj, url);
         }
 
-            function updateAction (form,objIn) {
-                let updateObj = function (errors, obj) {
-                    if (!errors) {
-                        return obj;
-                    } else {
-                        return errors;
-                    }
-                };
-                let uri = form.getElementsByTagName("input")[0].value;
-                let obj = objIn || form.getElementsByTagName("textarea")[0].value;
-                if(!obj){
-                    try {
-                        obj = JSON.parse(obj);
-                        obj["@id"] = uri;
-                    } catch (error) {
-                        return error;
-                    }
+        function updateAction (form,objIn) {
+            let updateObj = function (errors, obj) {
+                if (!errors) {
+                    return obj;
+                } else {
+                    return errors;
                 }
             };
             let uri = form.getElementsByTagName("input")[0].value;
-            let obj = objIn;
-            if (!obj) {
+            let obj;
+            if(objIn){
+                obj = objIn;
+            } else {
+                obj = form.getElementsByTagName("textarea")[0].value;
                 try {
-                    obj = JSON.parse(form.getElementsByTagName("textarea")[0].value);
+                    obj = JSON.parse(obj);
+                    obj["@id"] = uri;
                 } catch (error) {
                     return error;
                 }
-            }
+            };
             return put(updateObj, UPDATE_URL, obj);
         }
 
