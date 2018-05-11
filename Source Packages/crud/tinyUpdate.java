@@ -71,7 +71,7 @@ public class tinyUpdate extends HttpServlet {
             ResourceBundle rb = ResourceBundle.getBundle("tiny");
             String pubTok = rb.getString("public_token");
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/update");
+            URL postUrl = new URL(Constant.API_ADDR + "/update.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -83,7 +83,7 @@ public class tinyUpdate extends HttpServlet {
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             //Pass in the user provided JSON for the body of the rerumserver v1 request
-            out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
+            out.writeBytes(requestJSON.toString());
             out.flush();
             out.close(); 
             //Execute rerum server v1 request

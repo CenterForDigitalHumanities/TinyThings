@@ -146,6 +146,7 @@
                 let obj = objIn || form.getElementsByTagName("textarea")[0].value;
                 try {
                     obj = JSON.parse(obj);
+                    obj["@id"] = uri;
                 } catch (error) {
                     return error;
                 }
