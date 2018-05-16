@@ -73,6 +73,13 @@
                 display: block;
                 background-color: #66ff66;
             }
+            div#obj-viewer {
+                white-space: pre;
+                font-family: monospace;
+                font-size: .8rem;
+                max-height: 12rem;
+                overflow: auto;
+            }
         </style>
     </head>
 
@@ -130,6 +137,9 @@
             This &lt;div> should be invisible until a message appears.
         </div>
 
+        <div id="obj-viewer">
+        </div>
+
         <script>
             const CREATE_URL = "create";
             const UPDATE_URL = "update";
@@ -150,11 +160,26 @@
                 msgDiv.className = (type) ? type : ""
             }
 
+            function setObject (object) {
+                let showThis;
+                if (typeof object !== "object") {
+                    try {
+                        showThis = JSON.parse(object)
+                    } catch (error) {
+                        showThis = { error: error }
+                    }
+                } else {
+                    showThis = object;
+                }
+                let viewObject = document.getElementById("obj-viewer")
+                viewObject.innerHTML = JSON.stringify(showThis,undefined,4)
+            }
+
             async function importAction (form) {
                 let url = form.getElementsByTagName("input")[0].value
                 try {
                     let response = await fetch(url)
-                    let uri = await fetch(UPDATE_URL,{
+                    let uri = await fetch(UPDATE_URL, {
                         method: 'PUT',
                         body: await response.text(),
                         headers: new Headers({
@@ -162,6 +187,7 @@
                         })
                     })
                     await setMessage("Imported: ${uri}")
+                    await setObject(await response.text())
                     return await uri.json()
                 } catch (error) {
                     setMessage("Error:" + error.message)
@@ -186,6 +212,7 @@
                 try {
                     let uri = await put(UPDATE_URL, obj)
                     setMessage("Updated: ${uri}")
+                    await setObject(await obj)
                     return uri
                 } catch (error) {
                     setMessage("Error:" + error.message)
