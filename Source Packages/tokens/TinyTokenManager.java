@@ -24,7 +24,7 @@ import net.sf.json.JSONObject;
  * @author bhaberbe
  * This is the token manager for this application.  It handles all token interactions.
  */
-public class TinyTokenManager {
+public class TinyTokenManager{
     //Notice that when it is initialized, nothing is set.
     private String currentAccessToken = "";
     private String currentRefreshToken = "";
@@ -36,8 +36,7 @@ public class TinyTokenManager {
      * @param propFile The location of the properties file necessary to initialize.  
      * @throws IOException if no properties file
      */
-    public TinyTokenManager(String propFile) throws IOException {
-        propFileLocation = propFile;
+    public TinyTokenManager() throws IOException {
         init();
     }
     
@@ -48,11 +47,16 @@ public class TinyTokenManager {
      * @throws IOException 
      */
     public final Properties init() throws FileNotFoundException, IOException{
-        System.out.println("Read in props");
+        /*
+            Your properties file must be in the deployed .war file in WEB-INF/classes/tokens.  It is there automatically
+            if you have it in Source Packages/java/tokens when you build.  That is how this will read it in without defining a root location
+            https://stackoverflow.com/questions/2395737/java-relative-path-of-a-file-in-a-java-web-application
+        */
+        String fileLoc =TinyTokenManager.class.getResource(Constant.PROPERTIES_FILE_NAME).toString();
+        fileLoc = fileLoc.replace("file:/", "");
+        setFileLocation(fileLoc);
         InputStream input = new FileInputStream(propFileLocation);
         props.load(input);
-        System.out.println("I have read in the props...");
-        System.out.println(props.stringPropertyNames());
         currentAccessToken = props.getProperty("access_token");
         currentRefreshToken = props.getProperty("refresh_token");
         return props;
@@ -66,14 +70,12 @@ public class TinyTokenManager {
      * @throws IOException 
      */
     public void writeProperty (String prop, String propValue) throws FileNotFoundException, IOException{
-        System.out.println("Write new access token");
         OutputStream output = null;
         output = new FileOutputStream(propFileLocation);
         // set the properties value
         props.setProperty(prop, propValue);
         // save properties to project root folder
         props.store(output, null);
-        System.out.println("Written :)");
     }
     
     /**
@@ -83,7 +85,6 @@ public class TinyTokenManager {
      * @return Boolean true if expired or could not read token, false if token is not yet expired.
      */
     public boolean checkTokenExpiry(String token) {
-        System.out.println("check token expiry date");
         System.out.println(token);
         Date now = new Date();
         long nowTime = now.getTime();
@@ -91,15 +92,9 @@ public class TinyTokenManager {
         Date tokenEXPClaim;
         long expires;
         try {
-            System.out.println("Decode...");
             DecodedJWT recievedToken = JWT.decode(token);
-            System.out.println(recievedToken.getClaims());
-            System.out.println("Gather claim...");
             tokenEXPClaim = recievedToken.getExpiresAt();
             expires = tokenEXPClaim.getTime();
-            System.out.println("Claim was "+expires);
-            System.out.println("now is "+nowTime);
-            System.out.println(expires >= nowTime);
             return nowTime >= expires;
         } 
         catch (Exception exception){
@@ -117,23 +112,15 @@ public class TinyTokenManager {
      * @return Boolean true if expired or could not read token, false if token is not yet expired.
      */
     public boolean checkTokenExpiry() {
-        System.out.println("check token expiry date");
-        System.out.println(currentAccessToken);
         Date now = new Date();
         long nowTime = now.getTime();
         //Date expire;
         Date tokenEXPClaim;
         long expires;
         try {
-            System.out.println("Decode...");
             DecodedJWT recievedToken = JWT.decode(currentAccessToken);
-            System.out.println(recievedToken.getClaims());
-            System.out.println("Gather claim...");
             tokenEXPClaim = recievedToken.getExpiresAt();
             expires = tokenEXPClaim.getTime();
-            System.out.println("Claim was "+expires);
-            System.out.println("now is "+nowTime);
-            System.out.println(expires >= nowTime);
             return nowTime >= expires;
         } 
         catch (Exception exception){
@@ -157,8 +144,6 @@ public class TinyTokenManager {
         String newAccessToken = "";
         JSONObject jsonReturn = new JSONObject();
         JSONObject tokenRequestParams = new JSONObject();
-        System.out.println("Tiny Generate new access token");
-        System.out.println("I need current rt: "+currentRefreshToken);
         tokenRequestParams.element("refresh_token", currentRefreshToken);
         if(currentRefreshToken.equals("")){
             //You must read in the properties first!
@@ -217,7 +202,6 @@ public class TinyTokenManager {
     public String generateNewAccessToken(String refresh_token) throws SocketTimeoutException, IOException, Exception{
         String newAccessToken = "";
         JSONObject jsonReturn = new JSONObject();
-        String rerumTokenURL = "http://devstore.rerum.io/v1/api/accessToken.action";
         JSONObject tokenRequestParams = new JSONObject();
         tokenRequestParams.element("refresh_token", refresh_token);
         if(currentRefreshToken.equals("")){
@@ -227,7 +211,7 @@ public class TinyTokenManager {
         }
         else{
             try{
-                URL rerum = new URL(rerumTokenURL);
+                URL rerum = new URL(Constant.RERUM_ACCESS_TOKEN_URL);
                 HttpURLConnection connection = (HttpURLConnection) rerum.openConnection();
                 connection.setRequestMethod("POST"); 
                 connection.setConnectTimeout(5*1000); 
