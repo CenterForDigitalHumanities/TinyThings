@@ -12,20 +12,23 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
+import tokens.TinyTokenManager;
+
 
 /**
  *
  * @author bhaberbe
  */
 public class tinyUpdate extends HttpServlet {
+    //private final TinyTokenManager manager = new TinyTokenManager("E:\\tinyThings\\Source Packages\\tiny.properties");
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,8 +40,9 @@ public class tinyUpdate extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
         protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         
+        TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
         String line;
@@ -52,10 +56,6 @@ public class tinyUpdate extends HttpServlet {
           bodyString.append(line);
         }
         requestString = bodyString.toString();
-        System.out.println("This is how I understood your tiny update request as a string:");
-        System.out.println("<--------------------->");
-        System.out.println(requestString);
-        System.out.println("<--------------------->");
         try{ 
             //JSONObject test
             requestJSON = JSONObject.fromObject(requestString);
@@ -68,10 +68,13 @@ public class tinyUpdate extends HttpServlet {
         //If it was JSON
         if(moveOn){
             //Get public token for requests from property file
-            ResourceBundle rb = ResourceBundle.getBundle("tiny");
-            String pubTok = rb.getString("public_token");
+            String pubTok = manager.getAccessToken();
+            boolean expired = manager.checkTokenExpiry();
+            if(expired){
+                pubTok = manager.generateNewAccessToken();
+            }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/update.action");
+            URL postUrl = new URL(Constant.API_ADDR + "/update");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -116,7 +119,11 @@ public class tinyUpdate extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(tinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -130,7 +137,11 @@ public class tinyUpdate extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(tinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
