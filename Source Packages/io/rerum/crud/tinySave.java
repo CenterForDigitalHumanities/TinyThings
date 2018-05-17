@@ -66,7 +66,7 @@ public class tinySave extends HttpServlet {
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/create");
+            URL postUrl = new URL(Constant.API_ADDR + "/create.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);

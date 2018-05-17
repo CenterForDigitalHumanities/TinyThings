@@ -65,7 +65,7 @@ public class tinyDelete extends HttpServlet {
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/delete");
+            URL postUrl = new URL(Constant.API_ADDR + "/delete.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);

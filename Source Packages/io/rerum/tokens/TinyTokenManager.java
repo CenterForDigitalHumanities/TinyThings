@@ -53,7 +53,7 @@ public class TinyTokenManager{
             https://stackoverflow.com/questions/2395737/java-relative-path-of-a-file-in-a-java-web-application
         */
         String fileLoc =TinyTokenManager.class.getResource(Constant.PROPERTIES_FILE_NAME).toString();
-        fileLoc = fileLoc.replace("file:/", "");
+        fileLoc = fileLoc.replace("file:", "");
         setFileLocation(fileLoc);
         InputStream input = new FileInputStream(propFileLocation);
         props.load(input);
@@ -147,6 +147,7 @@ public class TinyTokenManager{
         tokenRequestParams.element("refresh_token", currentRefreshToken);
         if(currentRefreshToken.equals("")){
             //You must read in the properties first!
+            System.out.println("You must read in the properties first with init()");
             Exception noProps = new Exception("You must read in the properties first with init().  There was no refresh token set.");
             throw noProps;
         }
