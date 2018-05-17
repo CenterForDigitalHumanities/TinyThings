@@ -14,19 +14,22 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import tokens.TinyTokenManager;
 
 /**
  *
  * @author bhaberbe
  */
 public class tinyDelete extends HttpServlet {
-
+    TinyTokenManager manager = new TinyTokenManager();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,14 +40,12 @@ public class tinyDelete extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+            throws ServletException, IOException, Exception {
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
         String line;
         String requestString;
         boolean moveOn = false;
-        
         //Gather user provided parameters from BODY of request, not parameters
         while ((line = bodyReader.readLine()) != null)
         {
@@ -68,7 +69,11 @@ public class tinyDelete extends HttpServlet {
         if(moveOn){
             //Get public token for requests from property file
             ResourceBundle rb = ResourceBundle.getBundle("tiny");
-            String pubTok = rb.getString("public_token");
+            String pubTok = rb.getString("access_token");
+            boolean expired = manager.checkTokenExpiry(pubTok);
+            if(expired){
+                pubTok = manager.generateNewAccessToken();
+            }
             //Point to rerum server v1
             URL postUrl = new URL(Constant.API_ADDR + "/delete.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
@@ -114,7 +119,11 @@ public class tinyDelete extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(tinyDelete.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -128,7 +137,11 @@ public class tinyDelete extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(tinyDelete.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
