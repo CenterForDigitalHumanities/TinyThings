@@ -29,7 +29,7 @@ import tokens.TinyTokenManager;
  * @author bhaberbe
  */
 public class tinyDelete extends HttpServlet {
-    TinyTokenManager manager = new TinyTokenManager();
+    private TinyTokenManager manager = new TinyTokenManager();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
