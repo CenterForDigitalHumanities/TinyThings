@@ -9,10 +9,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,16 +18,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import tokens.TinyTokenManager;
 
 /**
  *
  * @author bhaberbe
  */
-public class tinyDelete extends HttpServlet {
-    private TinyTokenManager manager = new TinyTokenManager();
+public class tinyDelete extends HttpServlet {    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -41,22 +36,18 @@ public class tinyDelete extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
+        TinyTokenManager manager = new TinyTokenManager("E:\\tinyThings\\Source Packages\\tiny.properties");
+        manager.init();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
         String line;
         String requestString;
         boolean moveOn = false;
-        //Gather user provided parameters from BODY of request, not parameters
         while ((line = bodyReader.readLine()) != null)
         {
           bodyString.append(line);
         }
         requestString = bodyString.toString();
-        System.out.println("This is how I understood your tiny delete request as a string:");
-        System.out.println("<--------------------->");
-        System.out.println(requestString);
-        System.out.println("<--------------------->");
-        
         if(!requestString.contains(Constant.ID_PATTERN)){
             //IT IS NOT a rerum object, we can't delete this
             response.getWriter().print("Your provided id must be a RERUM URL");
@@ -64,18 +55,15 @@ public class tinyDelete extends HttpServlet {
         else{
             moveOn = true;
         }
-        
         //If it was JSON
-        if(moveOn){
-            //Get public token for requests from property file
-            ResourceBundle rb = ResourceBundle.getBundle("tiny");
-            String pubTok = rb.getString("access_token");
-            boolean expired = manager.checkTokenExpiry(pubTok);
+        if(moveOn){           
+            String pubTok = manager.getAccessToken();
+            boolean expired = manager.checkTokenExpiry();
             if(expired){
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/delete.action");
+            URL postUrl = new URL(Constant.API_ADDR + "/delete");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -103,11 +91,9 @@ public class tinyDelete extends HttpServlet {
             response.setStatus(code);
             response.setContentType("application/json");
             response.getWriter().print(sb.toString());
-        }
-        
+        }   
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

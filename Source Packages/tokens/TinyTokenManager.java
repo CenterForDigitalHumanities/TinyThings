@@ -3,6 +3,7 @@ package tokens;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import crud.Constant;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -31,12 +32,22 @@ public class TinyTokenManager {
     private Properties props = new Properties();
     
     /**
+     * Initializer for a TinyTokenManager that reads in the properties File
+     * @param propFile The location of the properties file necessary to initialize.  
+     * @throws IOException if no properties file
+     */
+    public TinyTokenManager(String propFile) throws IOException {
+        propFileLocation = propFile;
+        init();
+    }
+    
+    /**
      * After initializing, read in the properties you have and set the class values.
      * @return A Properties object containing the properties from the file.
      * @throws FileNotFoundException
      * @throws IOException 
      */
-    public Properties readInProps() throws FileNotFoundException, IOException{
+    public final Properties init() throws FileNotFoundException, IOException{
         System.out.println("Read in props");
         InputStream input = new FileInputStream(propFileLocation);
         props.load(input);
@@ -48,34 +59,18 @@ public class TinyTokenManager {
     }
     
     /**
-     * Write a new access token property to the properties file
-     * @param newToken
+     * 
+     * @param prop The property to write or overwrite
+     * @param propValue The value of the property
      * @throws FileNotFoundException
      * @throws IOException 
      */
-    public void writeNewAccessToken (String newToken) throws FileNotFoundException, IOException{
+    public void writeProperty (String prop, String propValue) throws FileNotFoundException, IOException{
         System.out.println("Write new access token");
         OutputStream output = null;
         output = new FileOutputStream(propFileLocation);
         // set the properties value
-        props.setProperty("access_token", newToken);
-        // save properties to project root folder
-        props.store(output, null);
-        System.out.println("Written :)");
-    }
-    
-    /**
-     * Write a new refresh token property to the properties file
-     * @param newToken
-     * @throws FileNotFoundException
-     * @throws IOException 
-     */
-    public void writeNewRefreshToken (String newToken) throws FileNotFoundException, IOException{
-        System.out.println("write new refresh token");
-        OutputStream output = null;
-        output = new FileOutputStream(propFileLocation);
-        // set the properties value
-        props.setProperty("refresh_token", newToken);
+        props.setProperty(prop, propValue);
         // save properties to project root folder
         props.store(output, null);
         System.out.println("Written :)");
@@ -116,9 +111,43 @@ public class TinyTokenManager {
     }
     
     /**
+     * Check if the token being used is expired or not.  Expired access tokens can be replaced with a new one so long as your property file
+     * has a valid refresh_token value stored.
+     * @param token
+     * @return Boolean true if expired or could not read token, false if token is not yet expired.
+     */
+    public boolean checkTokenExpiry() {
+        System.out.println("check token expiry date");
+        System.out.println(currentAccessToken);
+        Date now = new Date();
+        long nowTime = now.getTime();
+        //Date expire;
+        Date tokenEXPClaim;
+        long expires;
+        try {
+            System.out.println("Decode...");
+            DecodedJWT recievedToken = JWT.decode(currentAccessToken);
+            System.out.println(recievedToken.getClaims());
+            System.out.println("Gather claim...");
+            tokenEXPClaim = recievedToken.getExpiresAt();
+            expires = tokenEXPClaim.getTime();
+            System.out.println("Claim was "+expires);
+            System.out.println("now is "+nowTime);
+            System.out.println(expires >= nowTime);
+            return nowTime >= expires;
+        } 
+        catch (Exception exception){
+            System.out.println("Problem with token, no way to check expiry");
+            System.out.println(exception);
+            return true;
+        }
+  
+    }
+    
+    /**
      * Expired access tokens can be replaced with valid ones.
      * Note you must have read your properties in already so I know the currentRefreshToken.  
-     * @see readInProps()
+     * @see init()
      * @return A new valid access token.
      * @throws SocketTimeoutException
      * @throws IOException
@@ -127,19 +156,18 @@ public class TinyTokenManager {
     public String generateNewAccessToken() throws SocketTimeoutException, IOException, Exception{
         String newAccessToken = "";
         JSONObject jsonReturn = new JSONObject();
-        String rerumTokenURL = "http://devstore.rerum.io/v1/api/accessToken.action";
         JSONObject tokenRequestParams = new JSONObject();
         System.out.println("Tiny Generate new access token");
         System.out.println("I need current rt: "+currentRefreshToken);
         tokenRequestParams.element("refresh_token", currentRefreshToken);
         if(currentRefreshToken.equals("")){
             //You must read in the properties first!
-            Exception noProps = new Exception("You must read in the properties first with readInProps().  There was no refresh token set.");
+            Exception noProps = new Exception("You must read in the properties first with init().  There was no refresh token set.");
             throw noProps;
         }
         else{
             try{
-                URL rerum = new URL(rerumTokenURL);
+                URL rerum = new URL(Constant.RERUM_ACCESS_TOKEN_URL);
                 HttpURLConnection connection = (HttpURLConnection) rerum.openConnection();
                 connection.setRequestMethod("POST"); 
                 connection.setConnectTimeout(5*1000); 
@@ -173,6 +201,7 @@ public class TinyTokenManager {
             }
         }
         setAccessToken(newAccessToken);
+        writeProperty("refresh_token", newAccessToken);
         return newAccessToken;
     }
     
@@ -190,12 +219,10 @@ public class TinyTokenManager {
         JSONObject jsonReturn = new JSONObject();
         String rerumTokenURL = "http://devstore.rerum.io/v1/api/accessToken.action";
         JSONObject tokenRequestParams = new JSONObject();
-        System.out.println("Tiny Generate new access token");
-        System.out.println("I need current rt: "+refresh_token);
         tokenRequestParams.element("refresh_token", refresh_token);
         if(currentRefreshToken.equals("")){
             //You must read in the properties first!
-            Exception noProps = new Exception("You must read in the properties first with readInProps().  There was no refresh token set.");
+            Exception noProps = new Exception("You must read in the properties first with init().  There was no refresh token set.");
             throw noProps;
         }
         else{
@@ -230,10 +257,10 @@ public class TinyTokenManager {
                 jsonReturn = new JSONObject(); //We were never going to get a response, so return an empty object.
                 jsonReturn.element("error", "The Auth0 endpoint took too long");
                 throw e;
-                //newAccessToken = "error";
             }
         }
         setAccessToken(newAccessToken);
+        writeProperty("access_token", newAccessToken);
         return newAccessToken;
     }
     
@@ -261,19 +288,4 @@ public class TinyTokenManager {
         return propFileLocation;
     }
     
-    /*
-    public static void main(String[] args) throws IOException {
-        // set the plugins.dir property to make the plugin appear in the Plugins menu
-        System.out.println("Hello Word 1");
-        System.out.println("What is current AT");
-        TinyTokenManager TTM = new TinyTokenManager();
-        TTM.checkTokenExpiry("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ik9FVTBORFk0T1RVNVJrRXlOREl5TTBFMU1FVXdNMFUyT0RGQk9UaEZSa1JDTXpnek1FSTRNdyJ9.eyJpc3MiOiJodHRwczovL2N1YmFwLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1YWYzNDZjZmMzMGEwZjExYzZhYWVmYTIiLCJhdWQiOlsiaHR0cDovL3JlcnVtLmlvL2FwaSIsImh0dHBzOi8vY3ViYXAuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTUyNTg5MjgxNiwiZXhwIjoxNTI1OTAwMDE2LCJhenAiOiI2MkpzYTlNeEh1cWhSYk8yMGdUSHM5S3BLcjdVZTdzbCIsInNjb3BlIjoib3BlbmlkIGVtYWlsIn0.MfwqbHlEFolRPkkhEI7O81QTGt1l9x7K4tM5B9mYrlaXXQ2AG1DI_gN16lhrBbzvxg1rCfyGIIUMySAbC8MQthPqKl3IM-5RhKM4TF6ROM0mhOt2w8yMPAoAgzfgnBYyAl6_o9zPBnCwowbEZ3ig5575cLz4pXO5YBHReAN5JRWcejKwE_VpMjPAnMvVVIwVVZSA4d5-Srbhs9dQXUM-ROGTKHqFiGrk5q0u0nA3JfFHl5FdnV986IfXpdINIj3F9EXuZKTXpeZXqxYanFXablawmHzWz5ZGxY-TjnAIwbXTGTmOl9UKoYUAUHN-_7WQn9UZOTx5bLNz5lbwhPQjvQ");
-        System.out.println(TTM.getFileLocation());
-        TTM.setFileLocation("E:\\tinyThings\\Source Packages\\tiny.properties");
-        System.out.println(TTM.getFileLocation());
-        TTM.readInProps();
-        TTM.writeNewAccessToken("123TEST123");
-        TTM.writeNewRefreshToken("456TEST456");
-    }
-    */
 }

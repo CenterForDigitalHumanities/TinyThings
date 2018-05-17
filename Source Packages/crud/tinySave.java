@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -28,7 +27,6 @@ import tokens.TinyTokenManager;
  * @author bhaberbe
  */
 public class tinySave extends HttpServlet {
-    private TinyTokenManager manager = new TinyTokenManager();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -40,25 +38,18 @@ public class tinySave extends HttpServlet {
      */
        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        
+        TinyTokenManager manager = new TinyTokenManager("E:\\tinyThings\\Source Packages\\tiny.properties");
         BufferedReader bodyReader = request.getReader();
-      
         StringBuilder bodyString = new StringBuilder();
         String line;
         JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
-        
-        //Gather user provided parameters from BODY of request, not parameters
         while ((line = bodyReader.readLine()) != null)
         {
           bodyString.append(line);
         }
         requestString = bodyString.toString();
-        System.out.println("This is how I understood your tiny update request as a string:");
-        System.out.println("<--------------------->");
-        System.out.println(requestString);
-        System.out.println("<--------------------->");
         try{ 
             //JSONObject test
             requestJSON = JSONObject.fromObject(requestString);
@@ -66,19 +57,16 @@ public class tinySave extends HttpServlet {
         }
         catch(Exception ex){
             response.getWriter().print("Your provided content must be JSON 3");
-        }
-        
+        }       
         //If it was JSON
         if(moveOn){
-            //Get public token for requests from property file
-            ResourceBundle rb = ResourceBundle.getBundle("tiny");
-            String pubTok = rb.getString("access_token");
-            boolean expired = manager.checkTokenExpiry(pubTok);
+            String pubTok = manager.getAccessToken();
+            boolean expired = manager.checkTokenExpiry();
             if(expired){
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/create.action");
+            URL postUrl = new URL(Constant.API_ADDR + "/create");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -90,9 +78,6 @@ public class tinySave extends HttpServlet {
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             //Pass in the user provided JSON for the body of the rerumserver v1 request
-            System.out.println("This is what to send with create request to rerum");
-            System.out.println(requestJSON.toString());
-            System.out.println(URLEncoder.encode(requestJSON.toString(), "utf-8"));
             out.writeBytes(requestJSON.toString());
             //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
             out.flush();
