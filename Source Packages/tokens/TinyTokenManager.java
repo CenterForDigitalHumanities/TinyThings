@@ -169,9 +169,9 @@ public class TinyTokenManager {
                 newAccessToken = jsonReturn.getString("access_token");
             }
             catch(java.net.SocketTimeoutException e){ //This specifically catches the timeout
-                System.out.println("The Auth0 token endpoint is taking too long...");
+                System.out.println("The RERUM token endpoint is taking too long...");
                 jsonReturn = new JSONObject(); //We were never going to get a response, so return an empty object.
-                jsonReturn.element("error", "The Auth0 endpoint took too long");
+                jsonReturn.element("error", "The RERUM endpoint took too long");
                 throw e;
                 //newAccessToken = "error";
             }
