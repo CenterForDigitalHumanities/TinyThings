@@ -1,9 +1,9 @@
 
-package tokens;
+package io.rerum.tokens;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import crud.Constant;
+import io.rerum.crud.Constant;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;

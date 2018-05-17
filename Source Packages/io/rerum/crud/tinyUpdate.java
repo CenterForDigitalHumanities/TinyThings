@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package crud;
+package io.rerum.crud;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,13 +20,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
-import tokens.TinyTokenManager;
+import io.rerum.tokens.TinyTokenManager;
+
 
 /**
  *
  * @author bhaberbe
  */
-public class tinySave extends HttpServlet {
+public class tinyUpdate extends HttpServlet {
+    //private final TinyTokenManager manager = new TinyTokenManager("E:\\tinyThings\\Source Packages\\tiny.properties");
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,8 +39,9 @@ public class tinySave extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-       protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
+        
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
@@ -45,6 +49,8 @@ public class tinySave extends HttpServlet {
         JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
+        
+        //Gather user provided parameters from BODY of request, not parameters
         while ((line = bodyReader.readLine()) != null)
         {
           bodyString.append(line);
@@ -56,21 +62,23 @@ public class tinySave extends HttpServlet {
             moveOn = true;
         }
         catch(Exception ex){
-            response.getWriter().print("Your provided content must be JSON 3");
-        }       
+            response.getWriter().print("Your provided content must be JSON");
+        }
+        
         //If it was JSON
         if(moveOn){
+            //Get public token for requests from property file
             String pubTok = manager.getAccessToken();
             boolean expired = manager.checkTokenExpiry();
             if(expired){
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/create");
+            URL postUrl = new URL(Constant.API_ADDR + "/update");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("PUT");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
             connection.setRequestProperty("Content-Type", "application/json");
@@ -79,7 +87,6 @@ public class tinySave extends HttpServlet {
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             //Pass in the user provided JSON for the body of the rerumserver v1 request
             out.writeBytes(requestJSON.toString());
-            //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
             out.flush();
             out.close(); 
             //Execute rerum server v1 request
@@ -115,12 +122,12 @@ public class tinySave extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(tinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(tinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP <code>PUT</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -128,12 +135,12 @@ public class tinySave extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(tinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(tinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

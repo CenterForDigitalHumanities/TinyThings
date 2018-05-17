@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package crud;
+package io.rerum.crud;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -18,7 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import tokens.TinyTokenManager;
+import io.rerum.tokens.TinyTokenManager;
 
 /**
  *
