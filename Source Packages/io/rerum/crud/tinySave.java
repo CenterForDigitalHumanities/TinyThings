@@ -3,30 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package crud;
+package io.rerum.crud;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import io.rerum.tokens.TinyTokenManager;
 
 /**
  *
  * @author bhaberbe
  */
-public class tinyDelete extends HttpServlet {
-
+public class tinySave extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,52 +36,50 @@ public class tinyDelete extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+       protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, Exception {
+        TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
         String line;
+        JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
-        
-        //Gather user provided parameters from BODY of request, not parameters
         while ((line = bodyReader.readLine()) != null)
         {
           bodyString.append(line);
         }
         requestString = bodyString.toString();
-        System.out.println("This is how I understood your tiny delete request as a string:");
-        System.out.println("<--------------------->");
-        System.out.println(requestString);
-        System.out.println("<--------------------->");
-        
-        if(!requestString.contains(Constant.ID_PATTERN)){
-            //IT IS NOT a rerum object, we can't delete this
-            response.getWriter().print("Your provided id must be a RERUM URL");
-        }
-        else{
+        try{ 
+            //JSONObject test
+            requestJSON = JSONObject.fromObject(requestString);
             moveOn = true;
         }
-        
+        catch(Exception ex){
+            response.getWriter().print("Your provided content must be JSON 3");
+        }       
         //If it was JSON
         if(moveOn){
-            //Get public token for requests from property file
-            ResourceBundle rb = ResourceBundle.getBundle("tiny");
-            String pubTok = rb.getString("public_token");
+            String pubTok = manager.getAccessToken();
+            boolean expired = manager.checkTokenExpiry();
+            if(expired){
+                pubTok = manager.generateNewAccessToken();
+            }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/delete.action");
+            URL postUrl = new URL(Constant.API_ADDR + "/create");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
-            connection.setRequestMethod("DELETE");
+            connection.setRequestMethod("POST");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Authorization", "Bearer "+pubTok);
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             //Pass in the user provided JSON for the body of the rerumserver v1 request
-            out.writeBytes(requestString);
+            out.writeBytes(requestJSON.toString());
+            //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
             out.flush();
             out.close(); 
             //Execute rerum server v1 request
@@ -114,11 +112,15 @@ public class tinyDelete extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(tinySave.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
-     * Handles the HTTP <code>DELETE</code> method.
+     * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -126,9 +128,13 @@ public class tinyDelete extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(tinySave.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
