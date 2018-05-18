@@ -3,6 +3,7 @@ An template web application that serves for connecting with RERUM.  You will see
 CRUD actions proxied through RERUM in the TinyThings back end.  
 
 Visit [rerum.io](http://rerum.io) for more general information about RERUM.
+
 Want to use the API in your web application?  Learn how at the [API page](https://github.com/CenterForDigitalHumanities/rerum_server/blob/master/API.md).
 
 
