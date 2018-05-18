@@ -1,6 +1,7 @@
 # TinyThings
-An template web application that serves for connecting with RERUM.  You will see all
-CRUD actions proxied through RERUM in the TinyThings back end.  
+An tiny template web application for connecting with RERUM.  You will see all
+CRUD actions proxied through RERUM in the TinyThings back end.  Feel free to use
+this as a starting point for creating your own application that uses the RERUM service.
 
 Visit [rerum.io](http://rerum.io) for more general information about RERUM.
 
