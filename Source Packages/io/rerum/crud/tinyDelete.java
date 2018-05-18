@@ -50,7 +50,7 @@ public class tinyDelete extends HttpServlet {
           bodyString.append(line);
         }
         requestString = bodyString.toString();
-        if(!requestString.contains(Constant.ID_PATTERN)){
+        if(!requestString.contains(Constant.RERUM_ID_PATTERN)){
             //IT IS NOT a rerum object, we can't delete this
             response.getWriter().print("Your provided id must be a RERUM URL");
         }
@@ -66,7 +66,7 @@ public class tinyDelete extends HttpServlet {
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/delete.action");
+            URL postUrl = new URL(Constant.RERUM_API_ADDR + "/delete.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);

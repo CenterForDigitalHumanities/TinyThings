@@ -141,6 +141,7 @@ public class TinyTokenManager{
      * @throws Exception 
      */
     public String generateNewAccessToken() throws SocketTimeoutException, IOException, Exception{
+        System.out.println("Tiny Things has to get a new access token...");
         String newAccessToken = "";
         JSONObject jsonReturn = new JSONObject();
         JSONObject tokenRequestParams = new JSONObject();
@@ -153,6 +154,7 @@ public class TinyTokenManager{
         }
         else{
             try{
+                System.out.println("Connecting to RERUM with refresh token...");
                 URL rerum = new URL(Constant.RERUM_ACCESS_TOKEN_URL);
                 HttpURLConnection connection = (HttpURLConnection) rerum.openConnection();
                 connection.setRequestMethod("POST"); 
@@ -176,6 +178,7 @@ public class TinyTokenManager{
                 }
                 reader.close();
                 jsonReturn = JSONObject.fromObject(sb.toString());
+                System.out.println("RERUM responded with access token...");
                 newAccessToken = jsonReturn.getString("access_token");
             }
             catch(java.net.SocketTimeoutException e){ //This specifically catches the timeout
@@ -187,7 +190,8 @@ public class TinyTokenManager{
             }
         }
         setAccessToken(newAccessToken);
-        writeProperty("refresh_token", newAccessToken);
+        writeProperty("access_token", newAccessToken);
+        System.out.println("Tiny Things has a new access token, and it is written to the properties file...");
         return newAccessToken;
     }
     

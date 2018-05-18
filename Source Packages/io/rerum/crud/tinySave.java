@@ -38,6 +38,7 @@ public class tinySave extends HttpServlet {
      */
        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
+        System.out.println("Tiny save...");
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
@@ -66,8 +67,9 @@ public class tinySave extends HttpServlet {
                 System.out.println("Tiny thing detected an expired token, auto getting and setting a new one...");
                 pubTok = manager.generateNewAccessToken();
             }
+            System.out.println("Bearer token is set for Tiny Save, connecting to RERUM for create...");
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/create.action");
+            URL postUrl = new URL(Constant.RERUM_API_ADDR + "/create.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -93,6 +95,7 @@ public class tinySave extends HttpServlet {
             reader.close();
             int code = connection.getResponseCode();
             connection.disconnect();
+            System.out.println("RERUM create responded, out that to user!");
             //Hand back rerumserver response as this API's response.
             response.setStatus(code);
             response.setContentType("application/json");

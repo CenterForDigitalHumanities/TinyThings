@@ -75,7 +75,7 @@ public class tinyUpdate extends HttpServlet {
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.API_ADDR + "/update.action");
+            URL postUrl = new URL(Constant.RERUM_API_ADDR + "/update.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
