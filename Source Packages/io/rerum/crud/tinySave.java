@@ -94,6 +94,8 @@ public class tinySave extends HttpServlet {
             }
             reader.close();
             int code = connection.getResponseCode();
+            // https://github.com/CenterForDigitalHumanities/TinyThings/issues/7
+            // Check for error code? Throw something?
             connection.disconnect();
             System.out.println("RERUM create responded, out that to user!");
             //Hand back rerumserver response as this API's response.
