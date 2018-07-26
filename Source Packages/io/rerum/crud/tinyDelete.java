@@ -44,7 +44,6 @@ public class tinyDelete extends HttpServlet {
         StringBuilder bodyString = new StringBuilder();
         String line;
         String requestString;
-        boolean moveOn = false;
         while ((line = bodyReader.readLine()) != null)
         {
           bodyString.append(line);
@@ -52,13 +51,10 @@ public class tinyDelete extends HttpServlet {
         requestString = bodyString.toString();
         if(!requestString.contains(Constant.RERUM_ID_PATTERN)){
             //IT IS NOT a rerum object, we can't delete this
-            response.getWriter().print("Your provided id must be a RERUM URL");
-        }
-        else{
-            moveOn = true;
+            request.sendError(HttpServletResponse.SC_BAD_REQUEST,"Your provided id must be a RERUM URL. Pattern \""+Constant.RERUM_ID_PATTERN+"\" was not found.");
+            return;
         }
         //If it was JSON
-        if(moveOn){           
             String pubTok = manager.getAccessToken();
             boolean expired = manager.checkTokenExpiry();
             if(expired){
@@ -94,7 +90,6 @@ public class tinyDelete extends HttpServlet {
             response.setStatus(code);
             response.setContentType("application/json");
             response.getWriter().print(sb.toString());
-        }   
     }
 
     /**
@@ -140,7 +135,7 @@ public class tinyDelete extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Mark an object at a known `id` as deleted, removing it from the version history.";
     }// </editor-fold>
 
 }
