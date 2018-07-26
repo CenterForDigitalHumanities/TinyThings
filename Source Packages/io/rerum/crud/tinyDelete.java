@@ -52,6 +52,7 @@ public class tinyDelete extends HttpServlet {
         if(!requestString.contains(Constant.RERUM_ID_PATTERN)){
             //IT IS NOT a rerum object, we can't delete this
             request.sendError(HttpServletResponse.SC_BAD_REQUEST,"Your provided id must be a RERUM URL. Pattern \""+Constant.RERUM_ID_PATTERN+"\" was not found.");
+            // If we throw instead, the return isn't needed.
             return;
         }
         //If it was JSON
@@ -87,6 +88,8 @@ public class tinyDelete extends HttpServlet {
             int code = connection.getResponseCode();
             connection.disconnect();
             //Hand back rerumserver response as this API's response.
+            // https://github.com/CenterForDigitalHumanities/TinyThings/issues/4
+            // Should we check `code` for 204? Throw something?
             response.setStatus(code);
             response.setContentType("application/json");
             response.getWriter().print(sb.toString());
