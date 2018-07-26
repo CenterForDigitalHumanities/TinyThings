@@ -13,5 +13,3 @@ The developers at the Walter J. Ong, <sub><sup>S.J.</sup></sub> Center for Digit
 in connection with the RERUM service.
 Neither specific warranty or rights are associated with RERUM; registering and contributing implies only those rights 
 each object asserts about itself. We welcome sister instances of RERUM, ports to other languages, package managers, builds, etc.
-
-
