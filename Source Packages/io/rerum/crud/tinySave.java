@@ -91,7 +91,6 @@ public class tinySave extends HttpServlet {
                 //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
                 out.flush();
                 out.close(); 
-                //Execute rerum server v1 request
                 codeOverwrite = connection.getResponseCode();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
                 while ((line = reader.readLine()) != null){

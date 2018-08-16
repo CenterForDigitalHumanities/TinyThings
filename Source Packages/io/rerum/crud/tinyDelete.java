@@ -86,7 +86,6 @@ public class tinyDelete extends HttpServlet {
             out.writeBytes(requestString);
             out.flush();
             out.close(); 
-            //Execute rerum server v1 request
             codeOverwrite = connection.getResponseCode();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
             while ((line = reader.readLine()) != null){

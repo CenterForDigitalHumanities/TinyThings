@@ -93,7 +93,6 @@ public class tinyUpdate extends HttpServlet {
                 out.writeBytes(requestJSON.toString());
                 out.flush();
                 out.close(); 
-                //Execute rerum server v1 request
                 codeOverwrite = connection.getResponseCode();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
                 while ((line = reader.readLine()) != null){
