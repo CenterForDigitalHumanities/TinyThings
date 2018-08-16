@@ -39,10 +39,14 @@ public class tinySave extends HttpServlet {
        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         System.out.println("Tiny save...");
+        response.setHeader("Content-Type", "application/json; charset=utf-8");
+        response.setCharacterEncoding("UTF-8");
+        String line;
+        StringBuilder sb = new StringBuilder();
+        int codeOverwrite = 500;
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
-        String line;
         JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
@@ -57,7 +61,8 @@ public class tinySave extends HttpServlet {
             moveOn = true;
         }
         catch(Exception ex){
-            response.getWriter().print("Your provided content must be JSON 3");
+            response.setStatus(500);
+            response.getWriter().print(ex);
         }       
         //If it was JSON
         if(moveOn){
@@ -76,31 +81,37 @@ public class tinySave extends HttpServlet {
             connection.setRequestMethod("POST");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             connection.setRequestProperty("Authorization", "Bearer "+pubTok);
             connection.connect();
-            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            //Pass in the user provided JSON for the body of the rerumserver v1 request
-            out.writeBytes(requestJSON.toString());
-            //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
-            out.flush();
-            out.close(); 
-            //Execute rerum server v1 request
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
-            StringBuilder sb = new StringBuilder();
-            while ((line = reader.readLine()) != null){
-                //Gather rerum server v1 response
-                sb.append(line);
+            try{
+                DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+                //Pass in the user provided JSON for the body of the rerumserver v1 request
+                out.writeBytes(requestJSON.toString());
+                //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
+                out.flush();
+                out.close(); 
+                codeOverwrite = connection.getResponseCode();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
+                while ((line = reader.readLine()) != null){
+                    //Gather rerum server v1 response
+                    sb.append(line);
+                }
+                reader.close();
             }
-            reader.close();
-            int code = connection.getResponseCode();
-            // https://github.com/CenterForDigitalHumanities/TinyThings/issues/7
-            // Check for error code? Throw something?
+            catch(IOException ex){
+                //Need to get the response RERUM sent back.
+                BufferedReader error = new BufferedReader(new InputStreamReader(connection.getErrorStream(),"utf-8"));
+                String errorLine = "";
+                while ((errorLine = error.readLine()) != null){  
+                    sb.append(errorLine);
+                } 
+                error.close();
+            }
             connection.disconnect();
             System.out.println("RERUM create responded, out that to user!");
             //Hand back rerumserver response as this API's response.
-            response.setStatus(code);
-            response.setContentType("application/json");
+            response.setStatus(codeOverwrite);
             response.getWriter().print(sb.toString());
         }
         
