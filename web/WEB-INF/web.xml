@@ -12,6 +12,11 @@
         <servlet-name>delete</servlet-name>
         <servlet-class>io.rerum.crud.tinyDelete</servlet-class>
     </servlet>
+    <servlet>
+        <description>Pass a MongoDB query object into RERUM with the Bearer token.</description>
+        <servlet-name>query</servlet-name>
+        <servlet-class>io.rerum.crud.tinyQuery</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>create</servlet-name>
         <url-pattern>/create</url-pattern>
@@ -23,6 +28,10 @@
     <servlet-mapping>
         <servlet-name>update</servlet-name>
         <url-pattern>/update</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>query</servlet-name>
+        <url-pattern>/query</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
