@@ -152,6 +152,6 @@ public class tinyDelete extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Mark an object at a known `id` as deleted, removing it from the version history.";
-    }
+    }// </editor-fold>
 
 }
