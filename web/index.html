@@ -90,12 +90,26 @@
         </p>
 
         <div>
+            <button role="button" onclick="showForm('query')">query</button>
             <button role="button" onclick="showForm('remoteUpdate')">import</button>
             <button role="button" onclick="showForm('rerumUpdate')">update</button>
             <button role="button" onclick="showForm('create')">create</button>
             <button role="button" onclick="showForm('deleteObj')">delete</button>
         </div>
 
+        <form id="query" action="javascript:void(0);" onsubmit="queryAction(this)">
+            <h2>Find by Properties</h2>
+            <p>In this simple implementation, please enter a key and value pair to exactly match entries in the database.</p>
+            <label for="importId">
+                URI to Import
+            </label>
+            <input type="text" id="queryKey" />
+            <label for="importId">
+                URI to Import
+            </label>
+            <input type="text" id="queryValue" />
+            <button type="submit" role="button"> Send Query </button>
+        </form>
         <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)">
             <h2>Import Resource</h2>
             <label for="importId">
@@ -143,6 +157,7 @@
         <script>
             const CREATE_URL = "create";
             const UPDATE_URL = "update";
+            const QUERY_URL = "query";
             const DELETE_URL = "delete";
 
             function showForm (form) {
@@ -173,6 +188,27 @@
                 }
                 let viewObject = document.getElementById("obj-viewer")
                 viewObject.innerHTML = JSON.stringify(showThis,undefined,4)
+            }
+
+            async function queryAction (form) {
+                let entries = form.getElementsByTagName("input")
+                let query = {}
+                query[entries[0]] = entries[1]
+                let callback = function (error, data) {
+                    if (!error) {
+                        let tmpl = `<div>Results:`
+                        for(j in data.json()){
+                            tmpl += `<pre>${JSON.stringify(j)}</pre>`
+                        }
+                        tmpl+=`</div>`
+                        setMessage(tmpl)
+                        return data
+                    } else {
+                        setMessage("Error:" + error.message)
+                        return error
+                    }
+                };
+                return post(callback, QUERY_URL, query);
             }
 
             async function importAction (form) {
