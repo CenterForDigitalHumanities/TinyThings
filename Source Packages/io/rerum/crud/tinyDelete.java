@@ -40,7 +40,6 @@ public class tinyDelete extends HttpServlet {
         response.setHeader("Content-Type", "application/json; charset=utf-8");
         response.setCharacterEncoding("UTF-8");
         TinyTokenManager manager = new TinyTokenManager();
-        manager.init();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
         String line;
