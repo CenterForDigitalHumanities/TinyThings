@@ -13,7 +13,6 @@
         <servlet-class>io.rerum.crud.tinyDelete</servlet-class>
     </servlet>
     <servlet>
-        <description>Pass a MongoDB query object into RERUM with the Bearer token.</description>
         <servlet-name>query</servlet-name>
         <servlet-class>io.rerum.crud.tinyQuery</servlet-class>
     </servlet>

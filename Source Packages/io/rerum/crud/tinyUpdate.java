@@ -31,7 +31,7 @@ public class tinyUpdate extends HttpServlet {
     //private final TinyTokenManager manager = new TinyTokenManager("E:\\tinyThings\\Source Packages\\tiny.properties");
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * Processes requests for both HTTP <code>POST</code>
      * methods.
      *
      * @param request servlet request
@@ -118,23 +118,6 @@ public class tinyUpdate extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(tinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     /**
      * Handles the HTTP <code>PUT</code> method.
@@ -161,7 +144,7 @@ public class tinyUpdate extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Update the included keys on an object already in storage and return the location of the new version.";
     }// </editor-fold>
 
 }

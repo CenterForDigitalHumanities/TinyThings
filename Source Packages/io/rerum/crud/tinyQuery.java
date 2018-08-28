@@ -160,7 +160,7 @@ public class tinyQuery extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Pass a MongoDB query object into RERUM with the Bearer token.";
     }// </editor-fold>
 
 }

@@ -27,7 +27,7 @@ import io.rerum.tokens.TinyTokenManager;
 public class tinyDelete extends HttpServlet {    
     
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * Processes requests for both HTTP <code>POST</code>
      * methods.
      *
      * @param request servlet request
@@ -105,24 +105,6 @@ public class tinyDelete extends HttpServlet {
         connection.disconnect();
         response.setStatus(codeOverwrite);
         response.getWriter().print(sb.toString());
-    }
-
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(tinyDelete.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     /**
