@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import io.rerum.tokens.TinyTokenManager;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -92,6 +94,13 @@ public class tinyDelete extends HttpServlet {
                 sb.append(line);
             }
             reader.close();
+            for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
+                String values = "";
+                for (String value : entries.getValue()) {
+                    values += value + ",";
+                }
+                response.setHeader(entries.getKey(), values);
+            }
         }
         catch(IOException ex){
             //Need to get the response RERUM sent back.
