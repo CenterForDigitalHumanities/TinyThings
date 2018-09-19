@@ -111,6 +111,7 @@ public class tinyUpdate extends HttpServlet {
                 error.close();
             }
             connection.disconnect();
+            response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
             response.setStatus(codeOverwrite);
             response.getWriter().print(sb.toString());
         }
@@ -151,6 +152,26 @@ public class tinyUpdate extends HttpServlet {
             processRequest(request, response);
         } catch (Exception ex) {
             Logger.getLogger(tinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Handles the HTTP <code>OPTIONS</code> preflight method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Headers", "*");
+            response.setStatus(200);
+        } catch (Exception ex) {
+            Logger.getLogger(tinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
