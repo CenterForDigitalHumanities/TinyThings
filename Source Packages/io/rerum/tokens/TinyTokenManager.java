@@ -29,6 +29,7 @@ public class TinyTokenManager{
     private String currentAccessToken = "";
     private String currentRefreshToken = "";
     private String propFileLocation = "tiny.properties";
+    private String apiSetting = "";
     private Properties props = new Properties();
     
     /**
@@ -59,6 +60,7 @@ public class TinyTokenManager{
         props.load(input);
         currentAccessToken = props.getProperty("access_token");
         currentRefreshToken = props.getProperty("refresh_token");
+        apiSetting = props.getProperty("open_api_cors");
         return props;
     }
     
@@ -253,6 +255,14 @@ public class TinyTokenManager{
         return newAccessToken;
     }
     
+    public void setAPISetting(String setting){
+        //ensure invalid strings result to false
+        if(!setting.equals("true")){
+            setting = "false";
+        }
+        apiSetting = setting;
+    }
+    
     public void setFileLocation(String location){
         propFileLocation = location;
     }
@@ -263,6 +273,14 @@ public class TinyTokenManager{
     
     public void setRefreshToken(String newToken){
         currentRefreshToken = newToken;
+    }
+    
+    public String getAPISetting(){
+        //ensure invalid strings result to false
+        if(!apiSetting.equals("true")){
+            apiSetting = "false";
+        }
+        return apiSetting;
     }
     
     public String getAccessToken(){

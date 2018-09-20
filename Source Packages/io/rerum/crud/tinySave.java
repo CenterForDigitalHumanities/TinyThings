@@ -157,6 +157,8 @@ public class tinySave extends HttpServlet {
     
     /**
      * Handles the HTTP <code>OPTIONS</code> preflight method.
+     * This should be a configurable option.  Turning this on means you
+     * intend for this version of Tiny Things to work like an open API.  
      *
      * @param request servlet request
      * @param response servlet response
@@ -167,9 +169,15 @@ public class tinySave extends HttpServlet {
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Headers", "*");
+            TinyTokenManager manager = new TinyTokenManager();
+            String openAPI = manager.getAPISetting();
+            if(openAPI.equals("true")){
+                //These headers must be present to pass browser preflight for CORS
+                response.addHeader("Access-Control-Allow-Origin", "*");
+                response.addHeader("Access-Control-Allow-Headers", "*");
+            }
             response.setStatus(200);
+            
         } catch (Exception ex) {
             Logger.getLogger(tinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
