@@ -88,7 +88,6 @@ public class tinySave extends HttpServlet {
                 DataOutputStream out = new DataOutputStream(connection.getOutputStream());
                 //Pass in the user provided JSON for the body of the rerumserver v1 request
                 out.writeBytes(requestJSON.toString());
-                //out.writeBytes(URLEncoder.encode(requestJSON.toString(), "utf-8"));
                 out.flush();
                 out.close(); 
                 codeOverwrite = connection.getResponseCode();
@@ -111,7 +110,9 @@ public class tinySave extends HttpServlet {
             connection.disconnect();
             System.out.println("RERUM create responded, out that to user!");
             //Hand back rerumserver response as this API's response.
-            response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+            if(manager.getAPISetting().equals("true")){
+                response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+            }
             response.setStatus(codeOverwrite);
             response.getWriter().print(sb.toString());
         }

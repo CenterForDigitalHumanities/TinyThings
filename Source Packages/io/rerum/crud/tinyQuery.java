@@ -111,7 +111,9 @@ public class tinyQuery extends HttpServlet {
                 error.close();
             }
             connection.disconnect();
-            response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+            if(manager.getAPISetting().equals("true")){
+                response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+            }
             response.setStatus(codeOverwrite);
             response.getWriter().print(sb.toString());
         }

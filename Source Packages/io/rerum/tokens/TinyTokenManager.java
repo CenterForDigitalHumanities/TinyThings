@@ -34,7 +34,6 @@ public class TinyTokenManager{
     
     /**
      * Initializer for a TinyTokenManager that reads in the properties File
-     * @param propFile The location of the properties file necessary to initialize.  
      * @throws IOException if no properties file
      */
     public TinyTokenManager() throws IOException {
@@ -76,14 +75,14 @@ public class TinyTokenManager{
         output = new FileOutputStream(propFileLocation);
         // set the properties value
         props.setProperty(prop, propValue);
-        // save properties to project root folder
+        // save properties to propFileLocation
         props.store(output, null);
     }
     
     /**
      * Check if the token being used is expired or not.  Expired access tokens can be replaced with a new one so long as your property file
      * has a valid refresh_token value stored.
-     * @param token
+     * @param token to check
      * @return Boolean true if expired or could not read token, false if token is not yet expired.
      */
     public boolean checkTokenExpiry(String token) {
@@ -110,7 +109,6 @@ public class TinyTokenManager{
     /**
      * Check if the token being used is expired or not.  Expired access tokens can be replaced with a new one so long as your property file
      * has a valid refresh_token value stored.
-     * @param token
      * @return Boolean true if expired or could not read token, false if token is not yet expired.
      */
     public boolean checkTokenExpiry() {
