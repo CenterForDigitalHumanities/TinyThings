@@ -197,6 +197,7 @@
 
             async function updateAction (form, objIn) {
                 let uri = form.getElementsByTagName("input")[0].value
+                
                 let obj
                 if (objIn) {
                     obj = objIn
@@ -210,7 +211,8 @@
                     }
                 }
                 try {
-                    let uri = await put(UPDATE_URL, obj)
+                    //Not using a callback here, waiting on async instead
+                    let uri = await put(null, UPDATE_URL, obj)
                     setMessage("Updated: ${uri}")
                     await setObject(await obj)
                     return uri
