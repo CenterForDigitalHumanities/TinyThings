@@ -177,6 +177,7 @@ public class tinyUpdate extends HttpServlet {
                 //These headers must be present to pass browser preflight for CORS
                 response.addHeader("Access-Control-Allow-Origin", "*");
                 response.addHeader("Access-Control-Allow-Headers", "*");
+                response.addHeader("Access-Control-Allow-Methods", "*");
             }
             response.setStatus(200);
             
