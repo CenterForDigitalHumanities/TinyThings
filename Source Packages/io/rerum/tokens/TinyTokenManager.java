@@ -112,6 +112,7 @@ public class TinyTokenManager{
      * @return Boolean true if expired or could not read token, false if token is not yet expired.
      */
     public boolean checkTokenExpiry() {
+        //System.out.println("Checking token expiry...");
         Date now = new Date();
         long nowTime = now.getTime();
         //Date expire;
@@ -121,6 +122,9 @@ public class TinyTokenManager{
             DecodedJWT recievedToken = JWT.decode(currentAccessToken);
             tokenEXPClaim = recievedToken.getExpiresAt();
             expires = tokenEXPClaim.getTime();
+            //System.out.println("Now is "+nowTime);
+            //System.out.println("Expires at "+expires);
+            //System.out.println("Expired? "+(nowTime >= expires));
             return nowTime >= expires;
         } 
         catch (Exception exception){

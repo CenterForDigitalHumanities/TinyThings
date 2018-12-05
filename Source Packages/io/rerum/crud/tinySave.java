@@ -39,6 +39,7 @@ public class tinySave extends HttpServlet {
        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         System.out.println("Tiny save...");
+        request.setCharacterEncoding("UTF-8");
         response.setHeader("Content-Type", "application/json; charset=utf-8");
         response.setCharacterEncoding("UTF-8");
         String line;
