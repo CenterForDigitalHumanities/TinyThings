@@ -83,7 +83,9 @@ public class tinyDelete extends HttpServlet {
         try{
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             //Pass in the user provided JSON for the body of the rerumserver v1 request
-            out.writeBytes(requestString);
+            byte[] toWrite = requestString.getBytes("UTF-8");
+            //out.writeBytes(requestJSON.toString());
+            out.write(toWrite);
             out.flush();
             out.close(); 
             codeOverwrite = connection.getResponseCode();
