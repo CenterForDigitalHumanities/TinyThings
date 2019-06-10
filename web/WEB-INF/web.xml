@@ -17,6 +17,10 @@
         <servlet-name>query</servlet-name>
         <servlet-class>io.rerum.crud.tinyQuery</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>overwrite</servlet-name>
+        <servlet-class>io.rerum.crud.tinyOverwrite</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>create</servlet-name>
         <url-pattern>/create</url-pattern>
@@ -32,6 +36,10 @@
     <servlet-mapping>
         <servlet-name>query</servlet-name>
         <url-pattern>/query</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>overwrite</servlet-name>
+        <url-pattern>/overwrite</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
