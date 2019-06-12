@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 import io.rerum.tokens.TinyTokenManager;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -103,8 +105,14 @@ public class tinyUpdate extends HttpServlet {
                     sb.append(line);
                 }
                 reader.close();
-            }
-            catch(IOException ex){
+                for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
+                    String values = "";
+                    for (String value : entries.getValue()) {
+                        values += value + ",";
+                    }
+                    response.setHeader(entries.getKey(), values);
+                }
+            } catch (IOException ex) {
                 //Need to get the response RERUM sent back.
                 BufferedReader error = new BufferedReader(new InputStreamReader(connection.getErrorStream(),"utf-8"));
                 String errorLine = "";
