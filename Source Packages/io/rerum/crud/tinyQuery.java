@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 import io.rerum.tokens.TinyTokenManager;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -98,12 +100,19 @@ public class tinyQuery extends HttpServlet {
                 out.flush();
                 out.close(); 
                 codeOverwrite = connection.getResponseCode();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
-                while ((line = reader.readLine()) != null){
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+                while ((line = reader.readLine()) != null) {
                     //Gather rerum server v1 response
                     sb.append(line);
                 }
                 reader.close();
+                for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
+                    String values = "";
+                    for (String value : entries.getValue()) {
+                        values += value + ",";
+                    }
+                    response.setHeader(entries.getKey(), values);
+                }
             }
             catch(IOException ex){
                 //Need to get the response RERUM sent back.
@@ -124,24 +133,6 @@ public class tinyQuery extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(tinyQuery.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     /**
      * Handles the HTTP <code>PUT</code> method.
      *
