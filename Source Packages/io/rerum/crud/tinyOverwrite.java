@@ -9,10 +9,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -57,6 +55,7 @@ public class tinyOverwrite extends HttpServlet {
         {
           bodyString.append(line);
         }
+        bodyReader.close();
         requestString = bodyString.toString();
         try{ 
             //JSONObject test

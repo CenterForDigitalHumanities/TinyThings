@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -57,6 +55,7 @@ public class tinySave extends HttpServlet {
         {
           bodyString.append(line);
         }
+        bodyReader.close();
         requestString = bodyString.toString();
         try{ 
             //JSONObject test
