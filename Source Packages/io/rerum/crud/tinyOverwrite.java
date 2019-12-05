@@ -26,8 +26,6 @@ import io.rerum.tokens.TinyTokenManager;
  * @author bhaberbe
  */
 public class tinyOverwrite extends HttpServlet {
-    //private final TinyTokenManager manager = new TinyTokenManager("E:\\tinyThings\\Source Packages\\tiny.properties");
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
