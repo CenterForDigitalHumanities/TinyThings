@@ -97,20 +97,21 @@
             <button role="button" onclick="showForm('deleteObj')">delete</button>
         </div>
 
-        <form id="query" action="javascript:void(0);" onsubmit="queryAction(this)">
-            <h2>Find by Properties</h2>
-            <p>In this simple implementation, please enter a key and value pair to exactly match entries in the database.</p>
+        <form id="query" action="javascript:void(0);" onsubmit="queryAction(this)" data-hidden="true">
+            <h2>Find by Property</h2>
+            <p>In this simple implementation, please enter a key and value pair to exactly match entries in the database. 
+            The implementation supports more complete queries than this small form.</p>
             <label for="importId">
-                URI to Import
+                Key
             </label>
             <input type="text" id="queryKey" />
             <label for="importId">
-                URI to Import
+                Value
             </label>
             <input type="text" id="queryValue" />
             <button type="submit" role="button"> Send Query </button>
         </form>
-        <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)">
+        <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)" data-hidden="true">
             <h2>Import Resource</h2>
             <label for="importId">
                 URI to Import
@@ -130,7 +131,7 @@
             <textarea id="updateJSON"></textarea>
             <button type="submit" role="button"> Update </button>
         </form>
-        <form id="create" action="javascript:void(0);" onsubmit="createAction(this)" data-hidden="true">
+        <form id="create" action="javascript:void(0);" onsubmit="createAction(this)">
             <h2>Create Resource</h2>
             <label for="createJSON">
                 JSON to Create
