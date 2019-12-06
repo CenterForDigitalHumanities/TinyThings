@@ -57,6 +57,7 @@ public class TinyTokenManager{
         setFileLocation(fileLoc);
         InputStream input = new FileInputStream(propFileLocation);
         props.load(input);
+        input.close();
         currentAccessToken = props.getProperty("access_token");
         currentRefreshToken = props.getProperty("refresh_token");
         apiSetting = props.getProperty("open_api_cors");
@@ -77,6 +78,7 @@ public class TinyTokenManager{
         props.setProperty(prop, propValue);
         // save properties to propFileLocation
         props.store(output, null);
+        output.close();
     }
     
     /**
@@ -86,7 +88,6 @@ public class TinyTokenManager{
      * @return Boolean true if expired or could not read token, false if token is not yet expired.
      */
     public boolean checkTokenExpiry(String token) {
-        System.out.println(token);
         Date now = new Date();
         long nowTime = now.getTime();
         //Date expire;
@@ -99,11 +100,11 @@ public class TinyTokenManager{
             return nowTime >= expires;
         } 
         catch (Exception exception){
+            System.out.println(token);
             System.out.println("Problem with token, no way to check expiry");
             System.out.println(exception);
             return true;
         }
-  
     }
     
     /**
@@ -128,6 +129,7 @@ public class TinyTokenManager{
             return nowTime >= expires;
         } 
         catch (Exception exception){
+            System.out.println(currentAccessToken);
             System.out.println("Problem with token, no way to check expiry");
             System.out.println(exception);
             return true;
@@ -181,6 +183,7 @@ public class TinyTokenManager{
                     sb.append(line);
                 }
                 reader.close();
+                connection.disconnect();
                 jsonReturn = JSONObject.fromObject(sb.toString());
                 System.out.println("RERUM responded with access token...");
                 newAccessToken = jsonReturn.getString("access_token");
@@ -241,6 +244,7 @@ public class TinyTokenManager{
                     //Gather rerum server v1 response
                     sb.append(line);
                 }
+                connection.disconnect();
                 reader.close();
                 jsonReturn = JSONObject.fromObject(sb.toString());
                 newAccessToken = jsonReturn.getString("access_token");

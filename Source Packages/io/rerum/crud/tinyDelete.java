@@ -13,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +53,7 @@ public class tinyDelete extends HttpServlet {
         {
           bodyString.append(line);
         }
+        bodyReader.close();
         requestString = bodyString.toString();
         
         //RERUM will catch this
