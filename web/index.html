@@ -198,7 +198,7 @@
                 let callback = function (error, data) {
                     if (!error || error.message === "OK") {
                         let tmpl = `<div>Results:`
-                        for(j in data.json()){
+                        for(j in data){
                             tmpl += `<pre>${JSON.stringify(j)}</pre>`
                         }
                         tmpl+=`</div>`
