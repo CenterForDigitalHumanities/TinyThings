@@ -208,7 +208,7 @@
                         setMessage("Error:" + error.message)
                         return error
                     }
-                };
+                }
                 return await post(callback, QUERY_URL, query);
             }
 
@@ -228,13 +228,12 @@
                     return await uri.json()
                 } catch (error) {
                     setMessage("Error:" + error.message)
-                    return error;
+                    return error
                 }
             }
 
             async function updateAction (form, objIn) {
                 let uri = form.getElementsByTagName("input")[0].value
-                
                 let obj
                 if (objIn) {
                     obj = objIn
@@ -250,7 +249,7 @@
                 try {
                     //Not using a callback here, waiting on async instead
                     let uri = await put(null, UPDATE_URL, obj)
-                    setMessage("Updated: ${uri}")
+                    await setMessage("Updated: ${uri}")
                     await setObject(await obj)
                     return uri
                 } catch (error) {
@@ -262,10 +261,11 @@
             async function createAction (form) {
                 let callback = function (error, data) {
                     if (!error) {
-                        setMessage("Created: " + JSON.stringify(data))
+                        await setMessage("Created: " + data["@id"])
+                        await setObject(data)
                         return data
                     } else {
-                        setMessage("Error:" + error.message)
+                        await setMessage("Error:" + error.message)
                         return error
                     }
                 };
@@ -281,7 +281,7 @@
             function deleteAction (form) {
                 let callback = function (error, data) {
                     if (!error) {
-                        setMessage("Deleted: " + JSON.stringify(data))
+                        await setMessage("Object Deleted" + )
                         return data
                     } else {
                         setMessage("Error:" + error.message)
