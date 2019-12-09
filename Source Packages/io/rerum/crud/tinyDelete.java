@@ -39,7 +39,8 @@ public class tinyDelete extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         request.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Type", "application/json; charset=utf-8");
+        //This DELETE endpoint recieves the @id as a string.  If you would prefer to pass the whole object, make this application/json and make sure you at least pass {"@id":"http://example.org/id/123"}
+        response.setHeader("Content-Type", "text/plain; charset=utf-8");
         response.setCharacterEncoding("UTF-8");
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
@@ -55,16 +56,6 @@ public class tinyDelete extends HttpServlet {
         }
         bodyReader.close();
         requestString = bodyString.toString();
-        
-        //RERUM will catch this
-        /*
-        if(!requestString.contains(Constant.RERUM_ID_PATTERN)){
-            //IT IS NOT a rerum object, we can't delete this
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Your provided id must be a RERUM URL. Pattern \""+Constant.RERUM_ID_PATTERN+"\" was not found.");
-            moveOn = false;
-            // If we throw instead, the return isn't needed.
-        }
-        */
         //If it was JSON
         String pubTok = manager.getAccessToken();
         boolean expired = manager.checkTokenExpiry();

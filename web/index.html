@@ -80,6 +80,14 @@
                 max-height: 12rem;
                 overflow: auto;
             }
+            .msgLine{
+                display:block;
+                position: relative;
+                font-family: "Lucida Console", Monaco, monospace;
+                font-size: 0.8rem;
+                line-height: 1.2;
+            } 
+           
         </style>
     </head>
 
@@ -113,6 +121,7 @@
         </form>
         <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)" data-hidden="true">
             <h2>Import Resource</h2>
+            <p>Provide the URI of an external object to import attributed to your RERUM registered application.</p>
             <label for="importId">
                 URI to Import
             </label>
@@ -121,6 +130,7 @@
         </form>
         <form id="rerumUpdate" action="javascript:void(0);" onsubmit="updateAction(this)" data-hidden="true">
             <h2>Update Resource</h2>
+            <p>Provide the URI of an object to update.  Then, provide a JSON object with key:values to add to or update on the provided URI.</p>
             <label for="updateId">
                 URI to Update
             </label>
@@ -133,6 +143,7 @@
         </form>
         <form id="create" action="javascript:void(0);" onsubmit="createAction(this)">
             <h2>Create Resource</h2>
+            <p>Provide a valid JSON object to create an object attributed to your RERUM registered application.</p>
             <label for="createJSON">
                 JSON to Create
             </label>
@@ -141,6 +152,7 @@
         </form>
         <form id="deleteObj" action="javascript:void(0);" onsubmit="deleteAction(this)" data-hidden="true">
             <h2>Delete Resource</h2>
+            <p>Provide a valid JSON object attributed to your RERUM registered application to delete it.</p>
             <label for="deleteId">
                 URI to Delete
             </label>
@@ -174,6 +186,7 @@
                 let msgDiv = document.getElementById("flash-message")
                 msgDiv.innerHTML = msg
                 msgDiv.className = (type) ? type : ""
+                msgDiv.style.display = "block"
             }
 
             function setObject (object) {
@@ -194,38 +207,39 @@
             async function queryAction (form) {
                 let entries = form.getElementsByTagName("input")
                 let query = {}
+                let tmpl = `<div>`
                 query[entries[0].value] = entries[1].value
-                let callback = function (error, data) {
-                    if (!error || error.message === "OK") {
-                        let tmpl = `<div>Results:`
-                        for(j in data){
-                            tmpl += `<pre>${JSON.stringify(j)}</pre>`
-                        }
-                        tmpl+=`</div>`
-                        setMessage(tmpl)
-                        return data
-                    } else {
-                        setMessage("Error:" + error.message)
-                        return error
-                    }
-                }
-                return await post(callback, QUERY_URL, query);
+                fetch(QUERY_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: new Headers({
+                        'Content-Type': 'application/json'
+                    }),
+                    body: JSON.stringify(query)
+                })
+                .then(response => setObject(response.json()))
+                .catch(err => {
+                    //We could broadcast an event to say this failed, it depends what we want to trigger in interface.
+                    //This should suffice for now.
+                    console.error("There was an error gathering information to remove an item from the collection")
+                    console.log(itemElem)
+                })
             }
 
             async function importAction (form) {
                 let url = form.getElementsByTagName("input")[0].value
                 try {
-                    let response = await fetch(url)
-                    let uri = await fetch(UPDATE_URL, {
+                    let origObj = await fetch(url).then(response => response.json())
+                    let importObj = await fetch(UPDATE_URL, {
                         method: 'PUT',
-                        body: await response.text(),
+                        body: JSON.stringify(origObj),
                         headers: new Headers({
                             'Content-Type': 'application/json'
                         })
                     })
-                    await setMessage("Imported: ${uri}")
-                    await setObject(await response.text())
-                    return await uri.json()
+                    .then(response => response.json())
+                    setMessage("Imported URL "+url)
+                    setObject(importObj.new_obj_state)
                 } catch (error) {
                     setMessage("Error:" + error.message)
                     return error
@@ -249,8 +263,8 @@
                 try {
                     //Not using a callback here, waiting on async instead
                     let uri = await put(null, UPDATE_URL, obj)
-                    await setMessage("Updated: ${uri}")
-                    await setObject(await obj)
+                    setMessage("Updated: ${uri}")
+                    setObject(await obj)
                     return uri
                 } catch (error) {
                     setMessage("Error:" + error.message)
@@ -261,11 +275,11 @@
             async function createAction (form) {
                 let callback = function (error, data) {
                     if (!error) {
-                        await setMessage("Created: " + data["@id"])
-                        await setObject(data)
+                        setMessage("Created: " + data["@id"])
+                        setObject(data)
                         return data
                     } else {
-                        await setMessage("Error:" + error.message)
+                        setMessage("Error:" + error.message)
                         return error
                     }
                 };
@@ -281,7 +295,7 @@
             function deleteAction (form) {
                 let callback = function (error, data) {
                     if (!error) {
-                        await setMessage("Object Deleted" + )
+                        setMessage("Object Deleted")
                         return data
                     } else {
                         setMessage("Error:" + error.message)
