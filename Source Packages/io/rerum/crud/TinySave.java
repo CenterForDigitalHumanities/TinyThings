@@ -22,12 +22,11 @@ import io.rerum.tokens.TinyTokenManager;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  *
  * @author bhaberbe
  */
-public class tinyQuery extends HttpServlet {
+public class TinySave extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,28 +36,28 @@ public class tinyQuery extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+       protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
+        System.out.println("Tiny save...");
         request.setCharacterEncoding("UTF-8");
         response.setHeader("Content-Type", "application/json; charset=utf-8");
         response.setCharacterEncoding("UTF-8");
-        TinyTokenManager manager = new TinyTokenManager();
-        BufferedReader bodyReader = request.getReader();
-        StringBuilder bodyString = new StringBuilder();
         String line;
         StringBuilder sb = new StringBuilder();
         int codeOverwrite = 500;
+        TinyTokenManager manager = new TinyTokenManager();
+        BufferedReader bodyReader = request.getReader();
+        StringBuilder bodyString = new StringBuilder();
         JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
-        //Gather user provided parameters from BODY of request, not parameters
         while ((line = bodyReader.readLine()) != null)
         {
           bodyString.append(line);
         }
         bodyReader.close();
         requestString = bodyString.toString();
-        try { 
+        try{ 
             //JSONObject test
             requestJSON = JSONObject.fromObject(requestString);
             moveOn = true;
@@ -66,18 +65,18 @@ public class tinyQuery extends HttpServlet {
         catch(Exception ex){
             response.setStatus(500);
             response.getWriter().print(ex);
-        }
+        }       
         //If it was JSON
         if(moveOn){
-            //Get public token for requests from property file
             String pubTok = manager.getAccessToken();
             boolean expired = manager.checkTokenExpiry();
             if(expired){
                 System.out.println("Tiny thing detected an expired token, auto getting and setting a new one...");
                 pubTok = manager.generateNewAccessToken();
             }
+            System.out.println("Bearer token is set for Tiny Save, connecting to RERUM for create...");
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.RERUM_API_ADDR + "/getByProperties.action");
+            URL postUrl = new URL(Constant.RERUM_API_ADDR + "/create.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -89,16 +88,15 @@ public class tinyQuery extends HttpServlet {
             connection.connect();
             try{
                 DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-                //Pass in the user provided JSON for the body of the rerumserver v1 request
                 byte[] toWrite = requestJSON.toString().getBytes("UTF-8");
                 //Pass in the user provided JSON for the body of the rerumserver v1 request
-                //out.writeBytes(requestJSON.toString());
+                //out.writeBytes(requestJSON.toString()); //something about this is breaking special chars when using this as am open endpoint API
                 out.write(toWrite);
                 out.flush();
                 out.close(); 
                 codeOverwrite = connection.getResponseCode();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
-                while ((line = reader.readLine()) != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
+                while ((line = reader.readLine()) != null){
                     //Gather rerum server v1 response
                     sb.append(line);
                 }
@@ -121,17 +119,38 @@ public class tinyQuery extends HttpServlet {
                 error.close();
             }
             connection.disconnect();
+            System.out.println("RERUM create responded, out that to user!");
+            //Hand back rerumserver response as this API's response.
             if(manager.getAPISetting().equals("true")){
                 response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
             }
             response.setStatus(codeOverwrite);
             response.getWriter().print(sb.toString());
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>PUT</code> method.
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -144,7 +163,7 @@ public class tinyQuery extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(tinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -173,7 +192,7 @@ public class tinyQuery extends HttpServlet {
             response.setStatus(200);
             
         } catch (Exception ex) {
-            Logger.getLogger(tinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

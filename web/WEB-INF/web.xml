@@ -2,24 +2,24 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
         <servlet-name>create</servlet-name>
-        <servlet-class>io.rerum.crud.tinySave</servlet-class>
+        <servlet-class>io.rerum.crud.TinySave</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>update</servlet-name>
-        <servlet-class>io.rerum.crud.tinyUpdate</servlet-class>
+        <servlet-class>io.rerum.crud.TinyUpdate</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>delete</servlet-name>
-        <servlet-class>io.rerum.crud.tinyDelete</servlet-class>
+        <servlet-class>io.rerum.crud.TinyDelete</servlet-class>
     </servlet>
     <servlet>
         <description>Pass a MongoDB query object into RERUM with the Bearer token.</description>
         <servlet-name>query</servlet-name>
-        <servlet-class>io.rerum.crud.tinyQuery</servlet-class>
+        <servlet-class>io.rerum.crud.TinyQuery</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>overwrite</servlet-name>
-        <servlet-class>io.rerum.crud.tinyOverwrite</servlet-class>
+        <servlet-class>io.rerum.crud.TinyOverwrite</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>create</servlet-name>
