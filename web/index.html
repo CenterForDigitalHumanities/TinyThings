@@ -17,7 +17,8 @@
             h5,
             h6,
             button,
-            input {
+            input,
+            textarea{
                 color: #a3d1ff;
             }
 
@@ -29,6 +30,11 @@
                 border-radius: .25em;
                 padding: .2em;
                 font-size: 1.2rem;
+            }
+            
+            textarea, input{
+                display: block;
+                margin-bottom: 1em;
             }
 
             button[type="submit"] {
@@ -87,7 +93,7 @@
                 font-size: 0.8rem;
                 line-height: 1.2;
             } 
-            #createJSON{
+            #createJSON, #updateJSON, #overwriteJSON{
                 width: 500px;
                 height: 250px;
             }
@@ -113,7 +119,7 @@
 
         <form id="query" action="javascript:void(0);" onsubmit="queryAction(this)" data-hidden="true">
             <h2>Find by Property</h2>
-            <p>Enter a key and value pair to search RERUM for objects with that entry.  
+            <p>Enter a key and value to search RERUM for objects containing that key-value pair.  
                *Note RERUM supports more complex queries than this simple form (multi-key, embedded-key, wildcards, etc.)
             </p>
             <label for="importId">
