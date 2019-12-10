@@ -103,11 +103,12 @@
         </p>
 
         <div>
+            <button role="button" onclick="showForm('create')">create</button>
+            <button role="button" onclick="showForm('rerumUpdate')">update</button>
+            <button role="button" onclick="showForm('deleteObj')">overwrite</button>
+            <button role="button" onclick="showForm('deleteObj')">delete</button>
             <button role="button" onclick="showForm('query')">query</button>
             <button role="button" onclick="showForm('remoteUpdate')">import</button>
-            <button role="button" onclick="showForm('rerumUpdate')">update</button>
-            <button role="button" onclick="showForm('create')">create</button>
-            <button role="button" onclick="showForm('deleteObj')">delete</button>
         </div>
 
         <form id="query" action="javascript:void(0);" onsubmit="queryAction(this)" data-hidden="true">
@@ -299,7 +300,7 @@
                 })
                 .then(response => response.json())
                 .then(resultObj => {
-                    setMessage("Imported URL "+url+". See resulting object below.")
+                    setMessage("Imported URI "+url+". See resulting object below.")
                     setObject(resultObj.new_obj_state)
                 })
                 .catch(err => {
@@ -344,7 +345,7 @@
                 })
                 .then(response => response.json())
                 .then(resultObj => {
-                    setMessage("Updated URL "+uri+".  See resulting object below.")
+                    setMessage("Updated URI "+uri+".  See resulting object below.")
                     setObject(resultObj.new_obj_state)
                 })
                 .catch(err => {
@@ -426,41 +427,6 @@
             }
             
             /**
-             * Provide the URL of a RERUM object to delete.  Only those objects attributed to this applications's RERUM registration agent can be deleted.
-             * @see /src/rerm/tokens/tiny.properties access_token entry for attribution
-             * @param {type} form
-             */
-            async function deleteAction (form) {
-                let url = form.getElementsByTagName("input")[0].value
-                fetch(DELETE_URL, {
-                    method: 'DELETE',
-                    body: url,
-                    headers: new Headers({
-                        'Content-Type': 'text/plain; charset=utf-8'
-                    })
-                })
-                .then(response => {
-                    if(response.status === 204){
-                        setMessage("Object Deleted.  See result below.")
-                        fetch(url).then(resp => resp.json()).then(deletedObj => setObject(deletedObj))
-                    }
-                    else{
-                        //There was an error
-                        console.error("There was an error trying to delete object")
-                        console.error(response.statusText)
-                        setMessage(response.statusText)
-                        document.getElementById("obj-viewer").style.display="none"
-                    }
-                })
-                .catch(err => {
-                    console.error("There was an error trying to delete object")
-                    console.error(err)
-                    document.getElementById("obj-viewer").style.display="none"
-                    setMessage(err)
-                })
-            }
-            
-            /**
              * Replace the representation of a JSON object at a given URL. Note this will not create a new node in history, it will overwrite the existing node.
              * TOnly those objects attributed to this applications's RERUM registration agent can be overwritten.
              * @see /src/rerm/tokens/tiny.properties access_token entry for attribution
@@ -495,7 +461,7 @@
                 })
                 .then(response => response.json())
                 .then(resultObj => {
-                    setMessage("Updated URL "+uri+".  See resulting object below.")
+                    setMessage("URI "+uri+" Overwritten.  See resulting object below.")
                     setObject(resultObj.new_obj_state)
                 })
                 .catch(err => {
