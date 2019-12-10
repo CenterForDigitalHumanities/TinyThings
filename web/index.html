@@ -9,6 +9,14 @@
             form[data-hidden] {
                 display: none;
             }
+            
+            form p{
+                font-size: 12pt;
+            }
+            
+            form label{
+                font-size: 10pt;
+            }
 
             h1,
             h2,
@@ -112,7 +120,8 @@
 
         <form id="query" action="javascript:void(0);" onsubmit="queryAction(this)" data-hidden="true">
             <h2>Find by Property</h2>
-            <p>Enter a key and value to search RERUM for objects containing that key-value pair.  
+            <p>
+                Enter a key and value to search RERUM for objects containing that key-value pair.  
                *Note RERUM supports more complex queries than this simple form (multi-key, embedded-key, wildcards, etc.)
             </p>
             <label for="importId">
