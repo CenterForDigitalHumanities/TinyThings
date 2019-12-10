@@ -112,8 +112,9 @@
 
         <form id="query" action="javascript:void(0);" onsubmit="queryAction(this)" data-hidden="true">
             <h2>Find by Property</h2>
-            <p>In this simple implementation, please enter a key and value pair to exactly match entries in the database. 
-            The implementation supports more complete queries than this small form.</p>
+            <p>Enter a key and value pair to search RERUM for objects with that entry.  
+               *Note RERUM supports more complex queries than this simple form (multi-key, embedded-key, wildcards, etc.)
+            </p>
             <label for="importId">
                 Key
             </label>
@@ -126,7 +127,10 @@
         </form>
         <form id="remoteUpdate" action="javascript:void(0);" onsubmit="importAction(this)" data-hidden="true">
             <h2>Import Resource</h2>
-            <p>Provide the URI of an external object to import and attribute to your RERUM registered application.</p>
+            <p>
+                Provide the URI of an object external to RERUM to be imported into RERUM and attribute to your RERUM registered application.
+                This results in a new object in RERUM that references the original provided URI so as not to alter the original object.
+            </p>
             <label for="importId">
                 URI to Import
             </label>
@@ -135,9 +139,10 @@
         </form>
         <form id="rerumUpdate" action="javascript:void(0);" onsubmit="updateAction(this)" data-hidden="true">
             <h2>Update Resource</h2>
-            <p>Provide the URI of an object to update.  Then, provide a new representation of the JSON object to update with.
-                By default, this is a natural <a href="https://medium.com/backticks-tildes/restful-api-design-put-vs-patch-4a061aa3ed0b" target="_blank">PUT update</a>.
-                The resulting object is attributed to your RERUM registered agent
+            <p>
+                Provide the URI of an object to update.  Then, provide a new representation of the JSON object to update with.
+                By default, this is a RESTful <a href="https://medium.com/backticks-tildes/restful-api-design-put-vs-patch-4a061aa3ed0b" target="_blank">PUT update</a>.
+                The resulting object is attributed to your RERUM registered agent.
             </p>
             <label for="updateId">
                 URI to Update
@@ -149,9 +154,23 @@
             <textarea id="updateJSON"></textarea>
             <button type="submit" role="button"> Update </button>
         </form>
+        <form id="overwrite" action="javascript:void(0);" onsubmit="overwriteAction(this)" data-hidden="true">
+            <h2>Overwrite Resource</h2>
+            <p>
+                Provide the URI of an object to overwrite.  Then, provide a new representation of the JSON object to overwrite with.
+                This will perform a RESTful <a href="https://medium.com/backticks-tildes/restful-api-design-put-vs-patch-4a061aa3ed0b" target="_blank">PUT update</a>
+                but will not make a new node in history.  Instead, the originating node at the provided URI will be overwritten, with no way to see
+                how it originally existed.  Only those objects attributed to this applications's RERUM registration agent can be overwritten.
+            </p>
+            <label for="deleteId">
+                URI to Delete
+            </label>
+            <input type="url" id="deleteId" />
+            <button type="submit" role="button"> Delete </button>
+        </form>
         <form id="create" action="javascript:void(0);" onsubmit="createAction(this)">
             <h2>Create Resource</h2>
-            <p>Provide a valid JSON object to create an object attributed to your RERUM registered application.</p>
+            <p>Provide a valid JSON object to create an object in RERUM attributed to your RERUM registered application.</p>
             <label for="createJSON">
                 JSON to Create
             </label>
@@ -160,13 +179,17 @@
         </form>
         <form id="deleteObj" action="javascript:void(0);" onsubmit="deleteAction(this)" data-hidden="true">
             <h2>Delete Resource</h2>
-            <p>Provide a valid JSON object attributed to your RERUM registered application to delete it.</p>
+            <p>
+                Provide a URI to a RERUM object attributed to your RERUM registered application to delete it.
+                Only those objects attributed to this applications's RERUM registration agent can be deleted.
+            </p>
             <label for="deleteId">
                 URI to Delete
             </label>
             <input type="url" id="deleteId" />
             <button type="submit" role="button"> Delete </button>
         </form>
+        
 
         <div id="flash-message">
             This &lt;div> should be invisible until a message appears.

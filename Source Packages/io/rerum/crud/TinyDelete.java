@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author bhaberbe
  */
-public class tinyDelete extends HttpServlet {    
+public class TinyDelete extends HttpServlet {    
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -127,7 +127,7 @@ public class tinyDelete extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(tinyDelete.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -145,7 +145,7 @@ public class tinyDelete extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(tinyDelete.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -174,7 +174,7 @@ public class tinyDelete extends HttpServlet {
             response.setStatus(200);
             
         } catch (Exception ex) {
-            Logger.getLogger(tinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
