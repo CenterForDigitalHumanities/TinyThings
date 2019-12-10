@@ -207,200 +207,135 @@
             async function queryAction (form) {
                 let entries = form.getElementsByTagName("input")
                 let query = {}
-                let tmpl = `<div>`
                 query[entries[0].value] = entries[1].value
                 fetch(QUERY_URL, {
                     method: "POST",
                     mode: "cors",
                     headers: new Headers({
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json; charset=utf-8'
                     }),
                     body: JSON.stringify(query)
                 })
-                .then(response => setObject(response.json()))
+                .then(response => response.json())
+                .then(queryResult => {
+                    setMessage("See all matching results for the query below.")
+                    setObject(queryResult)
+                })
                 .catch(err => {
-                    //We could broadcast an event to say this failed, it depends what we want to trigger in interface.
-                    //This should suffice for now.
-                    console.error("There was an error gathering information to remove an item from the collection")
-                    console.log(itemElem)
+                    console.error("There was an error trying to query")
+                    console.error(err)
+                    setMessage(err)
                 })
             }
 
             async function importAction (form) {
                 let url = form.getElementsByTagName("input")[0].value
-                try {
-                    let origObj = await fetch(url).then(response => response.json())
-                    let importObj = await fetch(UPDATE_URL, {
-                        method: 'PUT',
-                        body: JSON.stringify(origObj),
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        })
+                let origObj = await fetch(url).then(response => response.json())
+                fetch(UPDATE_URL, {
+                    method: 'PUT',
+                    body: JSON.stringify(origObj),
+                    headers: new Headers({
+                        'Content-Type': 'application/json; charset=utf-8'
                     })
-                    .then(response => response.json())
-                    setMessage("Imported URL "+url)
-                    setObject(importObj.new_obj_state)
-                } catch (error) {
-                    setMessage("Error:" + error.message)
-                    return error
-                }
+                })
+                .then(response => response.json())
+                .then(resultObj => {
+                    setMessage("Imported URL "+url+". See resulting object below.")
+                    setObject(resultObj.new_obj_state)
+                })
+                .catch(err => {
+                    console.error("There was an error trying to import object at "+url)
+                    console.error(err)
+                    setMessage(err)
+                })    
             }
 
             async function updateAction (form, objIn) {
                 let uri = form.getElementsByTagName("input")[0].value
                 let obj
-                if (objIn) {
+                if (objIn !== undefined && typeof objIn === "object") {
                     obj = objIn
-                } else {
+                } 
+                else {
                     obj = form.getElementsByTagName("textarea")[0].value
-                    try {
-                        obj = JSON.parse(obj)
-                        obj["@id"] = uri
-                    } catch (error) {
-                        setMessage("Object is not proper JSON: ${obj}", "error")
-                    }
                 }
-                try {
-                    //Not using a callback here, waiting on async instead
-                    let uri = await put(null, UPDATE_URL, obj)
-                    setMessage("Updated: ${uri}")
-                    setObject(await obj)
-                    return uri
-                } catch (error) {
-                    setMessage("Error:" + error.message)
-                    return error;
-                }
+                obj["@id"] = uri
+                fetch(UPDATE_URL, {
+                    method: 'PUT',
+                    body: JSON.stringify(obj),
+                    headers: new Headers({
+                        'Content-Type': 'application/json; charset=utf-8'
+                    })
+                })
+                .then(response => response.json())
+                .then(resultObj => {
+                    setMessage("Updated URL "+uri+".  See resulting object below.")
+                    setObject(resultObj.new_obj_state)
+                })
+                .catch(err => {
+                    console.error("There was an error trying to update object at "+uri)
+                    console.error(err)
+                    setMessage(err)
+                })   
+                
             }
 
             async function createAction (form) {
-                let callback = function (error, data) {
-                    if (!error) {
-                        setMessage("Created: " + data["@id"])
-                        setObject(data)
-                        return data
-                    } else {
-                        setMessage("Error:" + error.message)
-                        return error
-                    }
-                };
                 let obj = form.getElementsByTagName("textarea")[0].value;
                 try {
                     obj = JSON.parse(obj);
                 } catch (error) {
                     return error;
                 }
+                fetch(CREATE_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(obj),
+                    headers: new Headers({
+                        'Content-Type': 'application/json; charset=utf-8'
+                    })
+                })
+                .then(response => response.json())
+                .then(resultObj => {
+                    setMessage("Created new object.  See result below.")
+                    setObject(resultObj.new_obj_state)
+                })
+                .catch(err => {
+                    console.error("There was an error trying to create object")
+                    console.error(err)
+                    setMessage(err)
+                })   
                 return await post(callback, CREATE_URL, obj);
             }
 
             function deleteAction (form) {
-                let callback = function (error, data) {
-                    if (!error) {
-                        setMessage("Object Deleted")
-                        return data
-                    } else {
-                        setMessage("Error:" + error.message)
-                        return error
-                    }
-                };
                 let url = form.getElementsByTagName("input")[0].value;
-                return deleteObj(callback, DELETE_URL, url);
+                fetch(DELETE_URL, {
+                    method: 'DELETE',
+                    body: url,
+                    headers: new Headers({
+                        'Content-Type': 'text/plain; charset=utf-8'
+                    })
+                })
+                .then(response => {
+                    if(response.status === 204){
+                       setMessage("Object Deleted.  See result below.")
+                        let deletedObj = await fetch(url).then(resp => resp.json())
+                        setObject(resultObj.new_obj_state) 
+                    }
+                    else{
+                        //There was an error
+                        console.error("There was an error trying to delete object")
+                        console.error(response.msg)
+                        setMessage(response.msg)
+                    }
+                })
+                .catch(err => {
+                    console.error("There was an error trying to delete object")
+                    console.error(err)
+                    setMessage(err)
+                })
             }
 
-            async function get (url) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("GET", url);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        let obj, err;
-                        if (xhr.status === 200) {
-                            try {
-                                obj = JSON.parse(xhr.response);
-                            } catch (error) {
-                                err = error;
-                            }
-                        } else {
-                            err = new Error(xhr.statusText || "GET failed.");
-                        }
-                        if (typeof callback === "function") {
-                            return callback(err, obj);
-                        }
-                    }
-                };
-                xhr.send();
-            }
-
-            async function post (callback, url, obj) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("POST", url, false);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        let res, err;
-                        if (xhr.status === 201) {
-                            try {
-                                res = JSON.parse(xhr.response);
-                            } catch (error) {
-                                err = error;
-                            }
-                        } else {
-                            err = new Error(xhr.statusText || "Create failed.");
-                        }
-                        if (typeof callback === "function") {
-                            return callback(err, res);
-                        }
-                        return err;
-                    }
-                };
-                if (typeof obj !== "string") {
-                    obj = JSON.stringify(obj);
-                }
-                xhr.send(obj);
-            }
-
-            function put (callback, url, obj) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("PUT", url);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        let res, err;
-                        if (xhr.status === 201) {
-                            try {
-                                res = JSON.parse(xhr.response);
-                            } catch (error) {
-                                err = error;
-                            }
-                        } else {
-                            err = new Error(xhr.statusText || "Update failed.")
-                        }
-                        return err;
-                    }
-                };
-                if (typeof obj !== "string") {
-                    obj = JSON.stringify(obj);
-                }
-                xhr.send(obj);
-            }
-
-            function deleteObj (callback, url, id) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("DELETE", url);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        let res, err;
-                        if (xhr.status === 204) {
-                            res = xhr.response;
-                        } else {
-                            err = new Error(xhr.statusText || "Delete failed.");
-                        }
-                        if (typeof callback === "function") {
-                            return callback(err, res);
-                        }
-                        return err;
-                    }
-                };
-                xhr.send(id);
-            }
         </script>
 
     </body>
