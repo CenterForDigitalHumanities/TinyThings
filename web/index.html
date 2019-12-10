@@ -105,7 +105,7 @@
         <div>
             <button role="button" onclick="showForm('create')">create</button>
             <button role="button" onclick="showForm('rerumUpdate')">update</button>
-            <button role="button" onclick="showForm('deleteObj')">overwrite</button>
+            <button role="button" onclick="showForm('overwrite')">overwrite</button>
             <button role="button" onclick="showForm('deleteObj')">delete</button>
             <button role="button" onclick="showForm('query')">query</button>
             <button role="button" onclick="showForm('remoteUpdate')">import</button>
@@ -163,11 +163,15 @@
                 but will not make a new node in history.  Instead, the originating node at the provided URI will be overwritten, with no way to see
                 how it originally existed.  Only those objects attributed to this applications's RERUM registration agent can be overwritten.
             </p>
-            <label for="deleteId">
-                URI to Delete
+            <label for="overwriteId">
+                URI to Overwrite
             </label>
-            <input type="url" id="deleteId" />
-            <button type="submit" role="button"> Delete </button>
+            <input type="url" id="overwriteId" />
+            <label for="overwriteJSON">
+                New JSON representation
+            </label>
+            <textarea id="overwriteJSON"></textarea>
+            <button type="submit" role="button"> Overwrite </button>
         </form>
         <form id="create" action="javascript:void(0);" onsubmit="createAction(this)">
             <h2>Create Resource</h2>
@@ -427,7 +431,7 @@
             }
             
             /**
-             * Replace the representation of a JSON object at a given URL. Note this will not create a new node in history, it will overwrite the existing node.
+             * Overwrite the representation of a JSON object at a given URL. Note this will not create a new node in history, it will overwrite the existing node.
              * TOnly those objects attributed to this applications's RERUM registration agent can be overwritten.
              * @see /src/rerm/tokens/tiny.properties access_token entry for attribution
              * @param {type} form
