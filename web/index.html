@@ -77,7 +77,7 @@
                 white-space: pre;
                 font-family: monospace;
                 font-size: .8rem;
-                max-height: 12rem;
+                /*max-height: 12rem;*/
                 overflow: auto;
             }
             .msgLine{
@@ -87,6 +87,11 @@
                 font-size: 0.8rem;
                 line-height: 1.2;
             } 
+            #createJSON{
+                width: 500px;
+                height: 250px;
+            }
+            
            
         </style>
     </head>
@@ -130,13 +135,14 @@
         </form>
         <form id="rerumUpdate" action="javascript:void(0);" onsubmit="updateAction(this)" data-hidden="true">
             <h2>Update Resource</h2>
-            <p>Provide the URI of an object to update.  Then, provide a JSON object with key:values to add to or update on the provided URI.</p>
+            <p>Provide the URI of an object to update.  Then, provide a new representation of the JSON object to update with.  
+                By default, this is a natural <a href="https://medium.com/backticks-tildes/restful-api-design-put-vs-patch-4a061aa3ed0b" target="_blank">PUT update</a>.</p>
             <label for="updateId">
                 URI to Update
             </label>
             <input type="url" id="updateId" />
             <label for="updateJSON">
-                New JSON for this object
+                New JSON representation
             </label>
             <textarea id="updateJSON"></textarea>
             <button type="submit" role="button"> Update </button>
@@ -168,18 +174,20 @@
         </div>
 
         <script>
-            const CREATE_URL = "create";
-            const UPDATE_URL = "update";
-            const QUERY_URL = "query";
-            const DELETE_URL = "delete";
+            const CREATE_URL = "create"
+            const UPDATE_URL = "update"
+            const QUERY_URL = "query"
+            const DELETE_URL = "delete"
 
             function showForm (form) {
-                let forms = document.getElementsByTagName('form');
+                let forms = document.getElementsByTagName('form')
                 for (let f of forms) {
-                    f.setAttribute("data-hidden", "true");
+                    f.setAttribute("data-hidden", "true")
                 }
-                let showForm = document.getElementById(form);
-                showForm.removeAttribute("data-hidden");
+                let showForm = document.getElementById(form)
+                showForm.removeAttribute("data-hidden")
+                document.getElementById("obj-viewer").style.display="none"
+                document.getElementById("flash-message").style.display="none"
             }
 
             function setMessage (msg, type) {
@@ -190,7 +198,7 @@
             }
 
             function setObject (object) {
-                let showThis;
+                let showThis
                 if (typeof object !== "object") {
                     try {
                         showThis = JSON.parse(object)
@@ -198,10 +206,11 @@
                         showThis = { error: error }
                     }
                 } else {
-                    showThis = object;
+                    showThis = object
                 }
                 let viewObject = document.getElementById("obj-viewer")
                 viewObject.innerHTML = JSON.stringify(showThis,undefined,4)
+                viewObject.style.display="block"
             }
 
             async function queryAction (form) {
@@ -225,6 +234,7 @@
                     console.error("There was an error trying to query")
                     console.error(err)
                     setMessage(err)
+                    document.getElementById("obj-viewer").style.display="none"
                 })
             }
 
@@ -247,6 +257,7 @@
                     console.error("There was an error trying to import object at "+url)
                     console.error(err)
                     setMessage(err)
+                    document.getElementById("obj-viewer").style.display="none"
                 })    
             }
 
@@ -258,6 +269,15 @@
                 } 
                 else {
                     obj = form.getElementsByTagName("textarea")[0].value
+                    try{
+                        obj = JSON.parse(obj)
+                    }
+                    catch(err){
+                        console.error("You did not provide valid JSON")
+                        setMessage("You did not provide valid JSON")
+                        document.getElementById("obj-viewer").style.display="none"
+                        return false
+                    }
                 }
                 obj["@id"] = uri
                 fetch(UPDATE_URL, {
@@ -276,16 +296,19 @@
                     console.error("There was an error trying to update object at "+uri)
                     console.error(err)
                     setMessage(err)
+                    document.getElementById("obj-viewer").style.display="none"
                 })   
-                
             }
 
             async function createAction (form) {
-                let obj = form.getElementsByTagName("textarea")[0].value;
+                let obj = form.getElementsByTagName("textarea")[0].value
                 try {
-                    obj = JSON.parse(obj);
+                    obj = JSON.parse(obj)
                 } catch (error) {
-                    return error;
+                    console.error("You did not provide valid JSON")
+                    setMessage("You did not provide valid JSON")
+                    document.getElementById("obj-viewer").style.display="none"
+                    return false
                 }
                 fetch(CREATE_URL, {
                     method: 'POST',
@@ -303,12 +326,12 @@
                     console.error("There was an error trying to create object")
                     console.error(err)
                     setMessage(err)
+                    document.getElementById("obj-viewer").style.display="none"
                 })   
-                return await post(callback, CREATE_URL, obj);
             }
 
-            function deleteAction (form) {
-                let url = form.getElementsByTagName("input")[0].value;
+            async function deleteAction (form) {
+                let url = form.getElementsByTagName("input")[0].value
                 fetch(DELETE_URL, {
                     method: 'DELETE',
                     body: url,
@@ -318,26 +341,24 @@
                 })
                 .then(response => {
                     if(response.status === 204){
-                       setMessage("Object Deleted.  See result below.")
-                        let deletedObj = await fetch(url).then(resp => resp.json())
-                        setObject(resultObj.new_obj_state) 
+                        setMessage("Object Deleted.  See result below.")
+                        fetch(url).then(resp => resp.json()).then(deletedObj => setObject(deletedObj))
                     }
                     else{
                         //There was an error
                         console.error("There was an error trying to delete object")
-                        console.error(response.msg)
-                        setMessage(response.msg)
+                        console.error(response.statusText)
+                        setMessage(response.statusText)
+                        document.getElementById("obj-viewer").style.display="none"
                     }
                 })
                 .catch(err => {
                     console.error("There was an error trying to delete object")
                     console.error(err)
+                    document.getElementById("obj-viewer").style.display="none"
                     setMessage(err)
                 })
             }
-
         </script>
-
     </body>
-
 </html>
