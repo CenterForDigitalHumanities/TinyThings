@@ -169,7 +169,7 @@
                 Provide the URI of an object to overwrite.  Then, provide a new representation of the JSON object to overwrite with.
                 This will perform a RESTful <a href="https://medium.com/backticks-tildes/restful-api-design-put-vs-patch-4a061aa3ed0b" target="_blank">PUT update</a>
                 but will not make a new node in history.  Instead, the originating node at the provided URI will be overwritten, with no way to see
-                how it originally existed.  Only those objects attributed to this applications's RERUM registration agent can be overwritten.
+                how it originally existed.  Only those objects attributed to this application's RERUM registration agent can be overwritten.
             </p>
             <label for="overwriteId">
                 URI to Overwrite
@@ -368,7 +368,7 @@
             }
             
             /**
-             * Provide a JSON object to create in RERUM.  The resulting object is attributed to this applications's RERUM registration agent.
+             * Provide a JSON object to create in RERUM.  The resulting object is attributed to this application's RERUM registration agent.
              * @see /src/rerm/tokens/tiny.properties access_token entry for attribution
              * @param {type} form
              */
@@ -403,7 +403,7 @@
             }
             
             /**
-             * Provide the URL of a RERUM object to delete.  Only those objects attributed to this applications's RERUM registration agent can be deleted.
+             * Provide the URL of a RERUM object to delete.  Only those objects attributed to this application's RERUM registration agent can be deleted.
              * @see /src/rerm/tokens/tiny.properties access_token entry for attribution
              * @param {type} form
              */
@@ -439,7 +439,7 @@
             
             /**
              * Overwrite the representation of a JSON object at a given URL. Note this will not create a new node in history, it will overwrite the existing node.
-             * TOnly those objects attributed to this applications's RERUM registration agent can be overwritten.
+             * TOnly those objects attributed to this application's RERUM registration agent can be overwritten.
              * @see /src/rerm/tokens/tiny.properties access_token entry for attribution
              * @param {type} form
              * @param {object} objIn An optional way to pass the new JSON representation as a parameter
