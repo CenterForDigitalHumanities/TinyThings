@@ -301,25 +301,36 @@
              */
             async function importAction (form) {
                 let url = form.getElementsByTagName("input")[0].value
-                let origObj = await fetch(url).then(response => response.json())
-                fetch(UPDATE_URL, {
-                    method: 'PUT',
-                    body: JSON.stringify(origObj),
-                    headers: new Headers({
-                        'Content-Type': 'application/json; charset=utf-8'
-                    })
-                })
+                let origObj = await fetch(url)
                 .then(response => response.json())
-                .then(resultObj => {
-                    setMessage("Imported URI "+url+". See resulting object below.")
-                    setObject(resultObj.new_obj_state)
+                .then(objForImport => {
+                    fetch(UPDATE_URL, {
+                        method: 'PUT',
+                        body: JSON.stringify(objForImport),
+                        headers: new Headers({
+                            'Content-Type': 'application/json; charset=utf-8'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(resultObj => {
+                        setMessage("Imported URI "+url+". See resulting object below.")
+                        setObject(resultObj.new_obj_state)
+                    })
+                    .catch(err => {
+                        console.error("There was an error trying to import object with identifier "+url)
+                        console.error(err)
+                        setMessage(err)
+                        document.getElementById("obj-viewer").style.display="none"
+                    })    
                 })
                 .catch(err => {
-                    console.error("There was an error trying to import object at "+url)
+                    console.error("Could not resolve object with identifier '"+url+"'")
                     console.error(err)
-                    setMessage(err)
+                    setMessage("Could not resolve object with identifier '"+url+"'")
                     document.getElementById("obj-viewer").style.display="none"
-                })    
+                })
+               
+
             }
             
             /**
