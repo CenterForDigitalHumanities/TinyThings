@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 import io.rerum.tokens.TinyTokenManager;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -97,6 +99,15 @@ public class TinyOverwrite extends HttpServlet {
                     sb.append(line);
                 }
                 reader.close();
+                for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
+                    String values = "";
+                    for (String value : entries.getValue()) {
+                        values += value + ",";
+                    }
+                    if(null != entries.getKey() && !entries.getKey().equals("Transfer-Encoding")){
+                        response.setHeader(entries.getKey(), values);
+                    }
+                }
             }
             catch(IOException ex){
                 //Need to get the response RERUM sent back.
