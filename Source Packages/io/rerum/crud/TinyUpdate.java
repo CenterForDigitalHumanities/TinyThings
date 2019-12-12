@@ -107,7 +107,9 @@ public class TinyUpdate extends HttpServlet {
                     for (String value : entries.getValue()) {
                         values += value + ",";
                     }
-                    response.setHeader(entries.getKey(), values);
+                    if(null != entries.getKey() && !entries.getKey().equals("Transfer-Encoding")){
+                        response.setHeader(entries.getKey(), values);
+                    }
                 }
             } catch (IOException ex) {
                 //Need to get the response RERUM sent back.
