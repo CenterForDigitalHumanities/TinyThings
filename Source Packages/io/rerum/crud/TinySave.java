@@ -74,7 +74,6 @@ public class TinySave extends HttpServlet {
                 System.out.println("Tiny thing detected an expired token, auto getting and setting a new one...");
                 pubTok = manager.generateNewAccessToken();
             }
-            System.out.println("Bearer token is set for Tiny Save, connecting to RERUM for create...");
             //Point to rerum server v1
             URL postUrl = new URL(Constant.RERUM_API_ADDR + "/create.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
@@ -121,7 +120,6 @@ public class TinySave extends HttpServlet {
                 error.close();
             }
             connection.disconnect();
-            System.out.println("RERUM create responded, out that to user!");
             //Hand back rerumserver response as this API's response.
             if(manager.getAPISetting().equals("true")){
                 response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers

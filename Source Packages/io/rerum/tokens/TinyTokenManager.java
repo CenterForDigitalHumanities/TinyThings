@@ -100,8 +100,8 @@ public class TinyTokenManager{
             return nowTime >= expires;
         } 
         catch (Exception exception){
-            System.out.println(token);
             System.out.println("Problem with token, no way to check expiry");
+            System.out.println(token);
             System.out.println(exception);
             return true;
         }
