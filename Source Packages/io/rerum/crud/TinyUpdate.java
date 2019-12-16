@@ -39,9 +39,6 @@ public class TinyUpdate extends HttpServlet {
      */
         protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        request.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Type", "application/json; charset=utf-8");
-        response.setCharacterEncoding("UTF-8");
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
@@ -125,6 +122,8 @@ public class TinyUpdate extends HttpServlet {
                 response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
             }
             response.setStatus(codeOverwrite);
+            request.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
             response.getWriter().print(sb.toString());
         }
         

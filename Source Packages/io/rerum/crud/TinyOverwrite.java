@@ -39,8 +39,6 @@ public class TinyOverwrite extends HttpServlet {
      */
         protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        response.setHeader("Content-Type", "application/json; charset=utf-8");
-        response.setCharacterEncoding("UTF-8");
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
@@ -120,6 +118,8 @@ public class TinyOverwrite extends HttpServlet {
             }
             connection.disconnect();
             response.setStatus(codeOverwrite);
+            response.setHeader("Content-Type", "application/json; charset=utf-8");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().print(sb.toString());
         }
         

@@ -39,9 +39,6 @@ public class TinyDelete extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         request.setCharacterEncoding("UTF-8");
-        //This DELETE endpoint recieves the @id as a string.  If you would prefer to pass the whole object, make this application/json and make sure you at least pass {"@id":"http://example.org/id/123"}
-        response.setHeader("Content-Type", "text/plain; charset=utf-8");
-        response.setCharacterEncoding("UTF-8");
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
@@ -112,6 +109,9 @@ public class TinyDelete extends HttpServlet {
             response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
         }
         response.setStatus(codeOverwrite);
+                //This DELETE endpoint recieves the @id as a string.  If you would prefer to pass the whole object, make this application/json and make sure you at least pass {"@id":"http://example.org/id/123"}
+        response.setHeader("Content-Type", "text/plain; charset=utf-8");
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().print(sb.toString());
     }
 
