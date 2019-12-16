@@ -99,9 +99,8 @@ public class TinyOverwrite extends HttpServlet {
                 reader.close();
                 for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
                     String values = "";
-                    for (String value : entries.getValue()) {
-                        values += value + ",";
-                    }
+                    String removeBraks = entries.getValue().toString();
+                    values = entries.getValue().toString().substring(1, removeBraks.length() -1);
                     if(null != entries.getKey() && !entries.getKey().equals("Transfer-Encoding")){
                         response.setHeader(entries.getKey(), values);
                     }
@@ -117,6 +116,9 @@ public class TinyOverwrite extends HttpServlet {
                 error.close();
             }
             connection.disconnect();
+            if(manager.getAPISetting().equals("true")){
+                response.setHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+            }
             response.setStatus(codeOverwrite);
             response.setHeader("Content-Type", "application/json; charset=utf-8");
             response.setCharacterEncoding("UTF-8");

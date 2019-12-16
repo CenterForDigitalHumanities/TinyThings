@@ -99,9 +99,8 @@ public class TinySave extends HttpServlet {
                 reader.close();
                 for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
                     String values = "";
-                    for (String value : entries.getValue()) {
-                        values += value + ",";
-                    }
+                    String removeBraks = entries.getValue().toString();
+                    values = entries.getValue().toString().substring(1, removeBraks.length() -1);
                     if(null != entries.getKey() && !entries.getKey().equals("Transfer-Encoding")){
                         response.setHeader(entries.getKey(), values);
                     }
@@ -119,7 +118,7 @@ public class TinySave extends HttpServlet {
             connection.disconnect();
             //Hand back rerumserver response as this API's response.
             if(manager.getAPISetting().equals("true")){
-                response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+                response.setHeader("Access-Control-Allow-Origin", "*");
             }
             response.setStatus(codeOverwrite);
             response.setHeader("Content-Type", "application/json; charset=utf-8");

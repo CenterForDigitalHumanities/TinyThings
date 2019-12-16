@@ -86,14 +86,13 @@ public class TinyDelete extends HttpServlet {
             }
             reader.close();
             for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
-                String values = "";
-                for (String value : entries.getValue()) {
-                    values += value + ",";
+                    String values = "";
+                    String removeBraks = entries.getValue().toString();
+                    values = entries.getValue().toString().substring(1, removeBraks.length() -1);
+                    if(null != entries.getKey() && !entries.getKey().equals("Transfer-Encoding")){
+                        response.setHeader(entries.getKey(), values);
+                    }
                 }
-                if(null != entries.getKey() && !entries.getKey().equals("Transfer-Encoding")){
-                    response.setHeader(entries.getKey(), values);
-                }
-            }
         }
         catch(IOException ex){
             //Need to get the response RERUM sent back.
@@ -106,7 +105,7 @@ public class TinyDelete extends HttpServlet {
         }
         connection.disconnect();
         if(manager.getAPISetting().equals("true")){
-            response.addHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+            response.setHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
         }
         response.setStatus(codeOverwrite);
                 //This DELETE endpoint recieves the @id as a string.  If you would prefer to pass the whole object, make this application/json and make sure you at least pass {"@id":"http://example.org/id/123"}
