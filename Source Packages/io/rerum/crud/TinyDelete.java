@@ -88,7 +88,7 @@ public class TinyDelete extends HttpServlet {
             for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
                     String values = "";
                     String removeBraks = entries.getValue().toString();
-                    values = entries.getValue().toString().substring(1, removeBraks.length() -1);
+                    values = removeBraks.substring(1, removeBraks.length() -1);
                     if(null != entries.getKey() && !entries.getKey().equals("Transfer-Encoding")){
                         response.setHeader(entries.getKey(), values);
                     }
