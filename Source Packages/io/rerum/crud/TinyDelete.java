@@ -175,7 +175,7 @@ public class TinyDelete extends HttpServlet {
             response.setStatus(200);
             
         } catch (Exception ex) {
-            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

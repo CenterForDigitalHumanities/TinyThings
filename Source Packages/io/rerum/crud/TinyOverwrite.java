@@ -144,6 +144,35 @@ public class TinyOverwrite extends HttpServlet {
             Logger.getLogger(TinyOverwrite.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    /**
+     * Handles the HTTP <code>OPTIONS</code> preflight method.
+     * This should be a configurable option.  Turning this on means you
+     * intend for this version of Tiny Things to work like an open API.  
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            TinyTokenManager manager = new TinyTokenManager();
+            String openAPI = manager.getAPISetting();
+            if(openAPI.equals("true")){
+                //These headers must be present to pass browser preflight for CORS
+                response.addHeader("Access-Control-Allow-Origin", "*");
+                response.addHeader("Access-Control-Allow-Headers", "*");
+                response.addHeader("Access-Control-Allow-Methods", "*");
+            }
+            response.setStatus(200);
+            
+        } catch (Exception ex) {
+            Logger.getLogger(TinyOverwrite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * Returns a short description of the servlet.
