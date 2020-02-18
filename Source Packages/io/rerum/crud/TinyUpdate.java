@@ -190,7 +190,7 @@ public class TinyUpdate extends HttpServlet {
             response.setStatus(200);
             
         } catch (Exception ex) {
-            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
