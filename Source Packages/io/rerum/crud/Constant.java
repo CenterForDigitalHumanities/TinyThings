@@ -11,11 +11,11 @@ package io.rerum.crud;
  */
 public class Constant {
     //AWS   http://18.218.227.205:8080/rerum_server
-    public static String RERUM_REGISTRATION_URL = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/rerum_server/";
-    public static String RERUM_API_ADDR = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/rerum_server/api";
+    public static String RERUM_REGISTRATION_URL = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/v1/";
+    public static String RERUM_API_ADDR = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/v1/api";
     //public static String RERUM_ID_PATTERN = "//devstore.rerum.io/v1/id";
-    public static String RERUM_ACCESS_TOKEN_URL = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/rerum_server/api/accessToken.action";
-    public static String RERUM_REFRESH_TOKEN_URL = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/rerum_server/api/refreshToken.action";
+    public static String RERUM_ACCESS_TOKEN_URL = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/v1/api/accessToken.action";
+    public static String RERUM_REFRESH_TOKEN_URL = "http://ec2-50-17-144-87.compute-1.amazonaws.com:8080/v1/api/refreshToken.action";
     
     //https://stackoverflow.com/questions/2395737/java-relative-path-of-a-file-in-a-java-web-application
     public static String PROPERTIES_FILE_NAME = "tiny.properties";
