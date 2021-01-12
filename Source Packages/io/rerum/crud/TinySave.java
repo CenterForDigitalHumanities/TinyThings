@@ -72,6 +72,7 @@ public class TinySave extends HttpServlet {
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
+            System.out.println("POST to " + Constant.RERUM_API_ADDR + "/create.action");
             URL postUrl = new URL(Constant.RERUM_API_ADDR + "/create.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
@@ -96,6 +97,7 @@ public class TinySave extends HttpServlet {
                     //Gather rerum server v1 response
                     sb.append(line);
                 }
+                System.out.println(sb.toString());
                 reader.close();
                 for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet()) {
                     String values = "";
@@ -113,6 +115,7 @@ public class TinySave extends HttpServlet {
                 while ((errorLine = error.readLine()) != null){  
                     sb.append(errorLine);
                 } 
+                System.out.println(sb.toString());
                 error.close();
             }
             connection.disconnect();
