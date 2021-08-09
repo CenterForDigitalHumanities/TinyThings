@@ -162,7 +162,7 @@ public class TinyUpdate extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

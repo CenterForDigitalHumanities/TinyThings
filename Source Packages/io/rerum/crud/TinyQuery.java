@@ -145,7 +145,7 @@ public class TinyQuery extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -163,7 +163,7 @@ public class TinyQuery extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -181,7 +181,7 @@ public class TinyQuery extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -210,7 +210,7 @@ public class TinyQuery extends HttpServlet {
             response.setStatus(200);
             
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

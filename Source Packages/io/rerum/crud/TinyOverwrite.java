@@ -142,7 +142,7 @@ public class TinyOverwrite extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyOverwrite.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -160,7 +160,7 @@ public class TinyOverwrite extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyOverwrite.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -178,7 +178,7 @@ public class TinyOverwrite extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyOverwrite.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -207,7 +207,7 @@ public class TinyOverwrite extends HttpServlet {
             response.setStatus(200);
             
         } catch (Exception ex) {
-            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TinyOverwrite.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
