@@ -428,7 +428,7 @@
                 })   
             }
             
-            /**
+           /**
              * Provide the URL of a RERUM object to delete.  Only those objects attributed to this application's RERUM registration agent can be deleted.
              * @see /src/rerm/tokens/tiny.properties access_token entry for attribution
              * @param {type} form
@@ -442,21 +442,24 @@
                         'Content-Type': 'text/plain; charset=utf-8'
                     })
                 })
-                .then(response => response.json())
-                .then(resultObj => {
-                    if(resultObj.code && resultObj.code !== 204){
-                        throw Error(`${resultObj.code}: ${resultObj.message}`)
+                .then(response => {
+                    if(response.status === 204){
+                        setMessage("Object Deleted.  See result below.")
+                        fetch(url).then(resp => resp.json()).then(deletedObj => setObject(deletedObj))
                     }
-                    setMessage("Object Deleted.  See result below.")
-                    fetch(url).then(resp => resp.json()).then(deletedObj => setObject(deletedObj))
-                    
+                    else{
+                        //There was an error
+                        console.error("There was an error trying to delete object")
+                        console.error(response.statusText)
+                        setMessage(response.statusText)
+                        document.getElementById("obj-viewer").style.display="none"
+                    }
                 })
                 .catch(err => {
                     console.error("There was an error trying to delete object")
                     console.error(err)
-                    setMessage(err)
-                    setObject({error:{message:err.message}}) //This is hidden with the next line of code.  Doesn't have to be.
                     document.getElementById("obj-viewer").style.display="none"
+                    setMessage(err)
                 })
             }
             
