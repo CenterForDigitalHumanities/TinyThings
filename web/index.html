@@ -394,7 +394,7 @@
                     return false
                 }
                 fetch(CREATE_URL, {
-                    method: 'POST',
+                    method: 'PUT',
                     body: JSON.stringify(obj),
                     headers: new Headers({
                         'Content-Type': 'application/json; charset=utf-8'
@@ -402,13 +402,17 @@
                 })
                 .then(response => response.json())
                 .then(resultObj => {
+                    if(resultObj.code && resultObj.code >= 400){
+                        throw Error(`${resultObj.code}: ${resultObj.message}`)
+                    }
                     setMessage("Created new object.  See result below.")
                     setObject(resultObj.new_obj_state)
                 })
                 .catch(err => {
                     console.error("There was an error trying to create object")
                     console.error(err)
-                    setMessage(err)
+                    setMessage(err.message)
+                    setObject({error:{message:err.message}}) //This is hidden with the next line of code.  Doesn't have to be.
                     document.getElementById("obj-viewer").style.display="none"
                 })   
             }
