@@ -46,6 +46,7 @@ public class TinyDelete extends HttpServlet {
         String requestString;
         StringBuilder sb = new StringBuilder();
         int codeOverwrite = 500;
+        String requestMethod = request.getMethod();
         boolean moveOn = true;
         while ((line = bodyReader.readLine()) != null)
         {
@@ -65,7 +66,7 @@ public class TinyDelete extends HttpServlet {
         HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        connection.setRequestMethod("DELETE");
+        connection.setRequestMethod(requestMethod);
         connection.setUseCaches(false);
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Authorization", "Bearer "+pubTok);

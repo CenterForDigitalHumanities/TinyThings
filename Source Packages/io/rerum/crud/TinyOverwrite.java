@@ -45,6 +45,7 @@ public class TinyOverwrite extends HttpServlet {
         String line;
         StringBuilder sb = new StringBuilder();
         int codeOverwrite = 500;
+        String requestMethod = request.getMethod();
         JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
@@ -78,7 +79,7 @@ public class TinyOverwrite extends HttpServlet {
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
-            connection.setRequestMethod("PUT");
+            connection.setRequestMethod(requestMethod);
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
