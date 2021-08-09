@@ -146,6 +146,24 @@ public class TinyUpdate extends HttpServlet {
             Logger.getLogger(TinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * Handles the HTTP <code>PUT</code> method.
@@ -191,6 +209,24 @@ public class TinyUpdate extends HttpServlet {
             
         } catch (Exception ex) {
             Logger.getLogger(TinyUpdate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Handles the HTTP <code>DELETE</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
