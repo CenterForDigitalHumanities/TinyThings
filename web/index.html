@@ -274,7 +274,7 @@
                 let query = {}
                 query[entries[0].value] = entries[1].value
                 fetch(QUERY_URL, {
-                    method: "PUT",
+                    method: "POST",
                     mode: "cors",
                     headers: new Headers({
                         'Content-Type': 'application/json; charset=utf-8'
@@ -366,7 +366,7 @@
                 }
                 obj["@id"] = uri
                 fetch(UPDATE_URL, {
-                    method: 'POST',
+                    method: 'PUT',
                     body: JSON.stringify(obj),
                     headers: new Headers({
                         'Content-Type': 'application/json; charset=utf-8'
@@ -405,7 +405,7 @@
                     return false
                 }
                 fetch(CREATE_URL, {
-                    method: 'PUT',
+                    method: 'POST',
                     body: JSON.stringify(obj),
                     headers: new Headers({
                         'Content-Type': 'application/json; charset=utf-8'
@@ -436,7 +436,7 @@
             async function deleteAction (form) {
                 let url = form.getElementsByTagName("input")[0].value
                 fetch(DELETE_URL, {
-                    method: 'POST',
+                    method: 'DELETE',
                     body: url,
                     headers: new Headers({
                         'Content-Type': 'text/plain; charset=utf-8'
@@ -487,7 +487,7 @@
                 }
                 obj["@id"] = uri
                 fetch(OVERWRITE_URL, {
-                    method: 'POST',
+                    method: 'PUT',
                     body: JSON.stringify(obj),
                     headers: new Headers({
                         'Content-Type': 'application/json; charset=utf-8'
