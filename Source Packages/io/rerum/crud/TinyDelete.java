@@ -46,6 +46,7 @@ public class TinyDelete extends HttpServlet {
         String requestString;
         StringBuilder sb = new StringBuilder();
         int codeOverwrite = 500;
+        String requestMethod = request.getMethod();
         boolean moveOn = true;
         while ((line = bodyReader.readLine()) != null)
         {
@@ -65,7 +66,7 @@ public class TinyDelete extends HttpServlet {
         HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        connection.setRequestMethod("DELETE");
+        connection.setRequestMethod(requestMethod);
         connection.setUseCaches(false);
         connection.setInstanceFollowRedirects(true);
         connection.setRequestProperty("Authorization", "Bearer "+pubTok);
@@ -114,6 +115,7 @@ public class TinyDelete extends HttpServlet {
         response.getWriter().print(sb.toString());
     }
 
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -133,7 +135,7 @@ public class TinyDelete extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>DELETE</code> method.
+     * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -141,7 +143,25 @@ public class TinyDelete extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Handles the HTTP <code>PUT</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             processRequest(request, response);
@@ -178,6 +198,25 @@ public class TinyDelete extends HttpServlet {
             Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    /**
+     * Handles the HTTP <code>DELETE</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 
     /**
      * Returns a short description of the servlet.

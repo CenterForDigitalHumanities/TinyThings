@@ -45,6 +45,7 @@ public class TinyQuery extends HttpServlet {
         String line;
         StringBuilder sb = new StringBuilder();
         int codeOverwrite = 500;
+        String requestMethod = request.getMethod();
         JSONObject requestJSON = new JSONObject();
         String requestString;
         boolean moveOn = false;
@@ -78,7 +79,7 @@ public class TinyQuery extends HttpServlet {
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(requestMethod);
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
@@ -131,7 +132,25 @@ public class TinyQuery extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>PUT</code> method.
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -140,6 +159,24 @@ public class TinyQuery extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Handles the HTTP <code>PUT</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             processRequest(request, response);
@@ -174,6 +211,24 @@ public class TinyQuery extends HttpServlet {
             
         } catch (Exception ex) {
             Logger.getLogger(TinyQuery.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Handles the HTTP <code>DELETE</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

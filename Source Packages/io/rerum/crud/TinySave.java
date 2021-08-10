@@ -42,6 +42,7 @@ public class TinySave extends HttpServlet {
         String line;
         StringBuilder sb = new StringBuilder();
         int codeOverwrite = 500;
+        String requestMethod = request.getMethod();
         TinyTokenManager manager = new TinyTokenManager();
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
@@ -72,11 +73,11 @@ public class TinySave extends HttpServlet {
                 pubTok = manager.generateNewAccessToken();
             }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.RERUM_API_ADDR + "/create.action");
-            HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
+            URL url = new URL(Constant.RERUM_API_ADDR + "/create.action");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(requestMethod);
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
@@ -106,7 +107,7 @@ public class TinySave extends HttpServlet {
                     }
                 }
             }
-            catch(IOException ex){
+            catch(Exception ex){
                 //Need to get the response RERUM sent back.
                 BufferedReader error = new BufferedReader(new InputStreamReader(connection.getErrorStream(),"utf-8"));
                 String errorLine = "";
@@ -165,6 +166,24 @@ public class TinySave extends HttpServlet {
     }
     
     /**
+     * Handles the HTTP <code>PUT</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
      * Handles the HTTP <code>OPTIONS</code> preflight method.
      * This should be a configurable option.  Turning this on means you
      * intend for this version of Tiny Things to work like an open API.  
@@ -190,6 +209,24 @@ public class TinySave extends HttpServlet {
             
         } catch (Exception ex) {
             Logger.getLogger(TinySave.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Handles the HTTP <code>DELETE</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(TinyDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
