@@ -120,6 +120,7 @@ public class TinySave extends HttpServlet {
             //Hand back rerumserver response as this API's response.
             if(manager.getAPISetting().equals("true")){
                 response.setHeader("Access-Control-Allow-Origin", "*");
+                response.setHeader("Access-Control-Expose-Headers", "*"); //Headers are restricted, unless you explicitly expose them.  Darn Browsers.
             }
             response.setStatus(codeOverwrite);
             response.setHeader("Content-Type", "application/json; charset=utf-8");
