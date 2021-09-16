@@ -120,6 +120,7 @@ public class TinyUpdate extends HttpServlet {
             connection.disconnect();
             if(manager.getAPISetting().equals("true")){
                 response.setHeader("Access-Control-Allow-Origin", "*"); //To use this as an API, it must contain CORS headers
+                response.setHeader("Access-Control-Expose-Headers", "*"); //Headers are restricted, unless you explicitly expose them.  Darn Browsers.
             }
             response.setStatus(codeOverwrite);
             request.setCharacterEncoding("UTF-8");
