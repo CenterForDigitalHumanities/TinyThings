@@ -40,6 +40,27 @@ public class TinyQuery extends HttpServlet {
         protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         TinyTokenManager manager = new TinyTokenManager();
+        
+        String l = request.getParameter("limit");
+        String s = request.getParameter("skip");
+        int lim = 0;
+        int skip = 0;
+        if(null != l){
+            try{
+                lim = Integer.parseInt(l);
+            }
+            catch(Exception e){
+                lim = 0;
+            }
+        }
+        if(null != s){
+            try{
+                skip = Integer.parseInt(s);
+            }
+            catch(Exception e){
+                skip = 0;
+            }
+        }
         BufferedReader bodyReader = request.getReader();
         StringBuilder bodyString = new StringBuilder();
         String line;
@@ -74,8 +95,12 @@ public class TinyQuery extends HttpServlet {
                 System.out.println("Tiny thing detected an expired token, auto getting and setting a new one...");
                 pubTok = manager.generateNewAccessToken();
             }
+            String serv = "/getByProperties.action?skip="+skip;
+            if(lim > 0){
+                serv += "&limit="+lim;
+            }
             //Point to rerum server v1
-            URL postUrl = new URL(Constant.RERUM_API_ADDR + "/getByProperties.action");
+            URL postUrl = new URL(Constant.RERUM_API_ADDR + serv);
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
