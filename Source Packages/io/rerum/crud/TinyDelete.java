@@ -192,6 +192,7 @@ public class TinyDelete extends HttpServlet {
                 response.setHeader("Access-Control-Allow-Origin", "*");
                 response.setHeader("Access-Control-Allow-Headers", "*");
                 response.setHeader("Access-Control-Allow-Methods", "*");
+                response.setHeader("Access-Control-Expose-Headers", "*"); //Headers are restricted, unless you explicitly expose them.  Darn Browsers.
             }
             response.setStatus(200);
             

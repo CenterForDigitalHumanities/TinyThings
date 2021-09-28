@@ -43,7 +43,7 @@ public class TinyQuery extends HttpServlet {
         
         String l = request.getParameter("limit");
         String s = request.getParameter("skip");
-        int lim = 0;
+        int lim = 50;
         int skip = 0;
         if(null != l){
             try{
@@ -95,10 +95,8 @@ public class TinyQuery extends HttpServlet {
                 System.out.println("Tiny thing detected an expired token, auto getting and setting a new one...");
                 pubTok = manager.generateNewAccessToken();
             }
-            String serv = "/getByProperties.action?skip="+skip;
-            if(lim > 0){
-                serv += "&limit="+lim;
-            }
+            String serv = "/getByProperties.action?skip=" + skip + "&limit=" + lim;
+
             //Point to rerum server v1
             URL postUrl = new URL(Constant.RERUM_API_ADDR + serv);
             HttpURLConnection connection = (HttpURLConnection) postUrl.openConnection();
@@ -232,6 +230,7 @@ public class TinyQuery extends HttpServlet {
                 response.setHeader("Access-Control-Allow-Origin", "*");
                 response.setHeader("Access-Control-Allow-Headers", "*");
                 response.setHeader("Access-Control-Allow-Methods", "*");
+                response.setHeader("Access-Control-Expose-Headers", "*"); //Headers are restricted, unless you explicitly expose them.  Darn Browsers.
             }
             response.setStatus(200);
             
