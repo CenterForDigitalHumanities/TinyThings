@@ -151,6 +151,8 @@ public class TinyQuery extends HttpServlet {
             }
             response.setStatus(codeOverwrite);
             response.setHeader("Content-Type", "application/json; charset=utf-8");
+            //It will stay fresh in cache for 30 seconds.  After that, you have to get it from the server again
+            response.setHeader("Cache-control", "max-age=30, must-revalidate");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(sb.toString());
         }
