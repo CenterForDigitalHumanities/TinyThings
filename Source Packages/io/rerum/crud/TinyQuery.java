@@ -151,9 +151,6 @@ public class TinyQuery extends HttpServlet {
             }
             response.setStatus(codeOverwrite);
             response.setHeader("Content-Type", "application/json; charset=utf-8");
-            //It will stay fresh in cache for 30 seconds.  After that, you have to get it from the server again
-            response.setHeader("Etag", request.getContextPath() + "/rerum-query/"+System.currentTimeMillis());
-            response.setHeader("Cache-Control", "max-age=30, must-revalidate");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(sb.toString());
         }
@@ -235,6 +232,7 @@ public class TinyQuery extends HttpServlet {
                 response.setHeader("Access-Control-Allow-Origin", "*");
                 response.setHeader("Access-Control-Allow-Headers", "*");
                 response.setHeader("Access-Control-Allow-Methods", "*");
+                response.setHeader("Access-Control-Max-Age", "600"); //Cache preflight responses for 10 minutes.
             }
             response.setStatus(200);
             

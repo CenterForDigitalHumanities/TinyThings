@@ -192,6 +192,7 @@ public class TinyDelete extends HttpServlet {
                 response.setHeader("Access-Control-Allow-Origin", "*");
                 response.setHeader("Access-Control-Allow-Headers", "*");
                 response.setHeader("Access-Control-Allow-Methods", "*");
+                response.setHeader("Access-Control-Max-Age", "600"); //Cache preflight responses for 10 minutes.
             }
             response.setStatus(200);
             
